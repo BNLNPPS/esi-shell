@@ -80,4 +80,7 @@ EOF
 
 RUN rm -fr /spack/share/spack/modules/$(spack arch)
 
-RUN mkdir -p ~/.opticks/rngcache/RNG
+WORKDIR $HOME
+
+COPY .opticks .opticks
+COPY epic epic
