@@ -39,7 +39,7 @@ RUN git clone https://github.com/SergiusTheBest/plog.git
 RUN cmake -S plog -B /build/plog && cmake --build /build/plog --parallel $(nproc) && cmake --install /build/plog
 
 RUN apt update && apt install -y libssl-dev python-is-python3
-RUN apt install -y vim
+RUN apt update && apt install -y vim gdb
 
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh ./
 
