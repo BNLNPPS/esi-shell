@@ -13,9 +13,9 @@ RUN apt update \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 
-RUN echo "source /spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
+RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 SHELL ["/bin/bash", "-l", "-c"]
 
@@ -32,12 +32,12 @@ EOF
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
 
 RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g' /opt/nvidia/nvidia_entrypoint.sh
-RUN sed -i 's/       autoload: direct/\       autoload: none/g'  /spack/etc/spack/defaults/modules.yaml
+RUN sed -i 's/       autoload: direct/\       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
 RUN spack module tcl refresh -y
-RUN cp -r /spack/share/spack/modules/$(spack arch) /opt/modules
+RUN cp -r /opt/spack/share/spack/modules/$(spack arch) /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
 RUN spack module tcl loads geant4 clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
-RUN rm -fr /spack/share/spack/modules/$(spack arch)
+RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
 
 # create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
