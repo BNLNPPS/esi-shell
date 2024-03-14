@@ -230,7 +230,7 @@ then
     exec $cmd
 elif [[ -n "${USABLE_DOCKER-}" ]]
 then
-    cmd="docker run $PLATFORM_FLAG $MOUNT -w=$PWD -it --rm $IMG bash -l"
+    cmd="docker run --gpus all $PLATFORM_FLAG $MOUNT -w=$PWD -it --rm $IMG bash -l"
     ohai "Executing: $cmd"
     exec $cmd
 else
