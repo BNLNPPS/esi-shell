@@ -88,3 +88,5 @@ COPY epic epic
 WORKDIR $HOME/opticks
 
 RUN echo "source $HOME/.opticks_config" >> /etc/profile.d/z20_opticks.sh
+
+RUN opticks-prepare-installation
