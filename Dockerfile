@@ -61,4 +61,13 @@ RUN echo "source $OPTICKS_HOME/opticks.bash" >> ~/.bash_profile
 RUN echo "opticks-" >> ~/.bash_profile
 
 RUN patch -p1 CSGOptiX/OPT.h $HOME/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
-RUN opticks-full
+
+RUN rm -fr /usr/local/optix/*
+
+RUN opticks-full-externals
+RUN <<EOF
+    source om.bash
+    om-(){ echo "skip sourcing om.bash"; }
+    om-subs--all(){ deps=(okconf sysrap ana analytic bin CSG qudarap gdxml u4); printf '%s\n' "${deps[@]}"; }
+    opticks-full-make
+EOF
