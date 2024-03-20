@@ -15,6 +15,12 @@ then
   abort "Bash is required to interpret this script."
 fi
 
+# Fail fast if OS is not Linux
+if [[ "$(uname)" != "Linux" ]]
+then
+  abort "esi-shell is only supported on Linux."
+fi
+
 REQUIRED_SINGULARITY_VERSION=3.7.4
 REQUIRED_DOCKER_VERSION=23.0.0
 
@@ -187,17 +193,6 @@ find_tool() {
   done < <(which -a "$1")
 }
 
-# First check OS.
-OS="$(uname)"
-if [[ "${OS}" == "Linux" ]]
-then
-  ESI_ON_LINUX=1
-elif [[ "${OS}" == "Darwin" ]]
-then
-  ESI_ON_MACOS=1
-else
-  abort "esi-shell is only supported on macOS and Linux."
-fi
 
 MOUNT=""
 for dir in /Volumes /Users /tmp; do
