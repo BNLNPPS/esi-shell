@@ -35,11 +35,8 @@ RUN rm -fr /spack/share/spack/modules/$(spack arch)
 
 RUN apt update && apt install -y libssl-dev python-is-python3
 
-COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh ./
-
-RUN chmod u+x ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+# create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
-RUN ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=/usr/local/optix
 
 ENV HOME=/esi
 ENV OPTICKS_HOME=$HOME/opticks
@@ -61,8 +58,6 @@ RUN echo "source $OPTICKS_HOME/opticks.bash" >> ~/.bash_profile
 RUN echo "opticks-" >> ~/.bash_profile
 
 RUN patch -p1 CSGOptiX/OPT.h $HOME/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
-
-RUN rm -fr /usr/local/optix/*
 
 RUN opticks-full-externals
 RUN <<EOF
