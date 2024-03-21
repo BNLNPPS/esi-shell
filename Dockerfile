@@ -5,7 +5,13 @@ FROM nvcr.io/nvidia/cuda:11.8.0-runtime-ubuntu22.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install Spack package manager
-RUN apt update && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip
+RUN apt update \
+ && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip \
+    libglm-dev libglfw3-dev libimgui-dev libglew-dev libglu1-mesa-dev \
+    libssl-dev python-is-python3 \
+    cuda-nvcc-11-8 libcurand-dev-11-8 \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /spack
 
 RUN echo "source /spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
@@ -20,7 +26,6 @@ RUN <<EOF
     spack clean -a
 EOF
 
-RUN apt update && apt install -y libglm-dev libglfw3-dev libimgui-dev libglew-dev libglu1-mesa-dev
 
 # Strip all the binaries
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
@@ -32,9 +37,6 @@ RUN cp -r /spack/share/spack/modules/$(spack arch) /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
 RUN spack module tcl loads geant4 clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /spack/share/spack/modules/$(spack arch)
-
-RUN apt update && apt install -y libssl-dev python-is-python3
-RUN apt update && apt install -y cuda-nvcc-11-8 libcurand-dev-11-8
 
 # create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
