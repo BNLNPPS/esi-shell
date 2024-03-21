@@ -34,6 +34,7 @@ RUN spack module tcl loads geant4 clhep boost cmake nlohmann-json >> /etc/profil
 RUN rm -fr /spack/share/spack/modules/$(spack arch)
 
 RUN apt update && apt install -y libssl-dev python-is-python3
+RUN apt update && apt install -y cuda-nvcc-11-8 libcurand-dev-11-8
 
 # create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
