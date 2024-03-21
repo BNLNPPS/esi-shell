@@ -10,6 +10,7 @@ RUN apt update \
     libglm-dev libglfw3-dev libimgui-dev libglew-dev libglu1-mesa-dev \
     libssl-dev python-is-python3 \
     cuda-nvcc-11-8 libcurand-dev-11-8 \
+ && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /spack
