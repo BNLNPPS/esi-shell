@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:11.8.0-devel-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:11.8.0-runtime-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
