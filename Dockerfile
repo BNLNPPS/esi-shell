@@ -59,8 +59,10 @@ COPY .opticks $ESI_DIR/.opticks
 WORKDIR $OPTICKS_HOME
 
 RUN mkdir -p $ESI_DIR
-RUN echo "source $OPTICKS_HOME/opticks.bash" >> ~/.bash_profile
-RUN echo "opticks-" >> ~/.bash_profile
+COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
+    source $OPTICKS_HOME/opticks.bash
+    opticks-
+EOF
 
 RUN patch -p1 CSGOptiX/OPT.h $ESI_DIR/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
 
