@@ -72,5 +72,4 @@ RUN <<EOF
     om-(){ echo "skip sourcing om.bash"; }
     om-subs--all(){ deps=(okconf sysrap ana analytic bin CSG qudarap gdxml u4); printf '%s\n' "${deps[@]}"; }
     opticks-full-make
-    rm -fr $OPTICKS_PREFIX/build
 EOF
