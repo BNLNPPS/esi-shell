@@ -15,17 +15,18 @@ then
   abort "Bash is required to interpret this script."
 fi
 
-# Fail fast if OS is not Linux
-if [[ "$(uname)" != "Linux" ]]
+# Fail fast if OS is not Linux or macOS
+OS=$(uname)
+if [[ "$OS" != "Linux" && "$OS" != "Darwin" ]]
 then
-  abort "esi-shell is only supported on Linux."
+  abort "esi-shell is only supported on Linux and macOS."
 fi
 
 REQUIRED_SINGULARITY_VERSION=3.7.4
 REQUIRED_DOCKER_VERSION=23.0.0
 
 # set default values
-CONTAINER="bnlnpps/esi-opticks"
+IMAGE_NAME="bnlnpps/esi-opticks"
 DEFAULT_VERSION="latest"
 VERSION=$DEFAULT_VERSION
 
@@ -193,41 +194,99 @@ find_tool() {
   done < <(which -a "$1")
 }
 
+# Call with a prompt string or use a default
+confirm()
+{
+  read -r -p "${1:-Are you sure? [y/n]} " response
+  if [[ "${response:=$2}" =~ ^([yY][eE][sS]|[yY])+$ ]]
+  then
+    true
+  else
+    false
+  fi
+}
 
-MOUNT=""
-for dir in /Volumes /Users /tmp; do
+# Test for GPU functionality
+check_gpu_driver() {
+  if [[ "${OS}" == "Darwin" ]]
+  then
+    warn "GPU functionality is not supported on macOS"
+    return 1
+  fi
+  # Check if libcuda.so.1 -- the CUDA driver -- is present in the ld.so cache or in LD_LIBRARY_PATH
+  _LIBCUDA_FROM_LD_CACHE=$(ldconfig -p | grep libcuda.so.1)
+  _LIBCUDA_FROM_LD_LIBRARY_PATH=$( ( IFS=: ; for i in ${LD_LIBRARY_PATH-}; do ls $i/libcuda.so.1 2>/dev/null | grep -v compat; done) )
+  _LIBCUDA_FOUND="${_LIBCUDA_FROM_LD_CACHE}${_LIBCUDA_FROM_LD_LIBRARY_PATH}"
+  
+  # Check if /dev/nvidiactl (like on Linux) or /dev/dxg (like on WSL2) or /dev/nvgpu (like on Tegra) is present
+  _DRIVER_FOUND=$(ls /dev/nvidiactl /dev/dxg /dev/nvgpu 2>/dev/null)
+  
+  # If either is not true, then GPU functionality won't be usable.
+  [[ "${_LIBCUDA_FOUND}" && "${_DRIVER_FOUND}" ]]
+}
+
+
+if check_gpu_driver
+then
+  DOCKER_GPU="--gpus all"
+fi
+
+WORKDIR=${WORKDIR:-$HOME}
+OPTIX_DIR=${OPTIX_DIR:-/usr/local/optix}
+
+for dir in /tmp $WORKDIR $OPTIX_DIR
+do
   ## only add directories once
-  if [[ ${MOUNT} =~ $(basename $dir) ]]; then
+  if [[ ${DOCKER_BIND_VOLUME-} =~ $(basename $dir) ]]; then
     continue
   fi
   if [ -d $dir ]; then
-    MOUNT="$MOUNT -v $dir:$dir"
+    DOCKER_BIND_VOLUME="${DOCKER_BIND_VOLUME-} -v $dir:$dir"
   fi
 done
-ohai "Docker mount directive: '$MOUNT'"
 
-PLATFORM_FLAG=''
-if [ `uname -m` = 'arm64' ]; then
-  PLATFORM_FLAG='--platform linux/amd64'
-  ohai "Additional platform flag to run on arm64"
-fi
+#if [ `uname -m` = "arm64" ]; then
+#  DOCKER_PLATFORM="--platform linux/amd64"
+#fi
 
 USABLE_SINGULARITY="$(find_tool singularity)"
 USABLE_DOCKER="$(find_tool docker)"
 
-IMG=${CONTAINER}:${VERSION}
+IMG=${IMAGE_NAME}:${VERSION}
 ohai "Using esi-shell image: ${IMG}"
 
-if [[ -n "${USABLE_SINGULARITY-}" ]]
+if [[ -n "${USABLE_DOCKER-}" ]]
 then
-    cmd="singularity exec -e docker://$IMG bash -l"
-    ohai "Executing: $cmd"
-    exec $cmd
-elif [[ -n "${USABLE_DOCKER-}" ]]
+  cmd="docker run --rm -dit ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR -e HOME=$WORKDIR -w=$WORKDIR $IMG"
+  CONTAINER_ID=$(exec $cmd)
+
+  if [ $? -ne 0 ]
+  then
+    abort "Failed to start esi-shell"
+  fi
+
+  CONTAINER_ID=$(echo $CONTAINER_ID | cut -c -12)
+  ohai "Running docker container $CONTAINER_ID"
+
+  ohai "Setting up opticks environment. Please wait..."
+  if [[ -d $WORKDIR/.opticks ]]
+  then
+    ohai "Found existing $WORKDIR/.opticks. Will use it"
+    docker exec -it $CONTAINER_ID bash -l -c 'opticks-full-make &> /dev/null'
+  else
+    ohai "Creating new $WORKDIR/.opticks required by opticks"
+    docker exec -it $CONTAINER_ID sh -c 'cp -r $ESI_DIR/.opticks $HOME/'
+    docker exec -it $CONTAINER_ID bash -l -c 'opticks-full &> /dev/null'
+  fi
+
+  docker exec -it $CONTAINER_ID /opt/nvidia/nvidia_entrypoint.sh
+  confirm "Stop and remove container? [Y/n]" yes && docker rm -f $CONTAINER_ID || ohai "Remove container manually: docker rm -f $CONTAINER_ID"
+
+elif [[ -n "${USABLE_SINGULARITY-}" ]]
 then
-    cmd="docker run --gpus all $PLATFORM_FLAG $MOUNT -w=$PWD -it --rm $IMG bash -l"
-    ohai "Executing: $cmd"
-    exec $cmd
+  cmd="singularity exec -e docker://$IMG bash -l"
+  ohai "Running: $cmd"
+  exec $cmd
 else
-    abort "Either singularity (>= $REQUIRED_SINGULARITY_VERSION) or docker (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
+  abort "Either singularity (>= $REQUIRED_SINGULARITY_VERSION) or docker (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
 fi
