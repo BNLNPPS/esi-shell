@@ -51,4 +51,4 @@ jobs:
       - name: Run tests
         run: |
           docker load --input /tmp/esi-opticks-${{ env.TAG }}.tar
-          docker run ghcr.io/${{ env.REPOSITORY }}:${{ env.TAG }} ls -la /usr/local/opticks
+          docker run ghcr.io/${{ env.REPOSITORY }}:${{ env.TAG }} bash -l -c opticks-info
