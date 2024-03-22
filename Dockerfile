@@ -59,7 +59,7 @@ COPY .opticks $ESI_DIR/.opticks
 WORKDIR $OPTICKS_HOME
 
 RUN mkdir -p $ESI_DIR
-RUN <<-"EOF" /etc/profile.d/z20_opticks.sh
+COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
     source $OPTICKS_HOME/opticks.bash
     opticks-
 EOF
