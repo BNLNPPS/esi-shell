@@ -42,26 +42,26 @@ RUN rm -fr /spack/share/spack/modules/$(spack arch)
 # create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
 
-ENV HOME=/esi
-ENV OPTICKS_HOME=$HOME/opticks
+ENV ESI_DIR=/esi-opticks
+ENV OPTICKS_HOME=$ESI_DIR/opticks
 ENV OPTICKS_PREFIX=/usr/local/opticks
 ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
 ENV OPTICKS_OPTIX_PREFIX=/usr/local/optix
 ENV OPTICKS_COMPUTE_CAPABILITY=52
 ENV PYTHONPATH=${OPTICKS_HOME}
 
-COPY epic $HOME/epic
-COPY opticks $HOME/opticks
-COPY patches $HOME/patches
-COPY .opticks $HOME/.opticks
+COPY epic $ESI_DIR/epic
+COPY opticks $ESI_DIR/opticks
+COPY patches $ESI_DIR/patches
+COPY .opticks $ESI_DIR/.opticks
 
 WORKDIR $OPTICKS_HOME
 
-RUN mkdir -p $HOME
+RUN mkdir -p $ESI_DIR
 RUN echo "source $OPTICKS_HOME/opticks.bash" >> ~/.bash_profile
 RUN echo "opticks-" >> ~/.bash_profile
 
-RUN patch -p1 CSGOptiX/OPT.h $HOME/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
+RUN patch -p1 CSGOptiX/OPT.h $ESI_DIR/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
 
 RUN opticks-full-externals
 RUN <<EOF
