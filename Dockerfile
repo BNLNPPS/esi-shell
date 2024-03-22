@@ -24,6 +24,7 @@ RUN <<EOF
     spack install boost+system+program_options+regex+filesystem
     spack install cmake
     spack install nlohmann-json
+    spack uninstall -f -y g4ndl g4emlow
     spack clean -a
 EOF
 
@@ -69,4 +70,5 @@ RUN <<EOF
     om-(){ echo "skip sourcing om.bash"; }
     om-subs--all(){ deps=(okconf sysrap ana analytic bin CSG qudarap gdxml u4); printf '%s\n' "${deps[@]}"; }
     opticks-full-make
+    rm -fr $OPTICKS_PREFIX/build
 EOF
