@@ -268,7 +268,7 @@ then
   CONTAINER_ID=$(echo $CONTAINER_ID | cut -c -12)
   ohai "Running docker container $CONTAINER_ID"
 
-  ohai "Setting up opticks environemnt. Please wait..."
+  ohai "Setting up opticks environment. Please wait..."
   if [[ -d $WORKDIR/.opticks ]]
   then
     ohai "Found existing $WORKDIR/.opticks. Will use it"
