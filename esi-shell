@@ -272,11 +272,9 @@ then
   if [[ -d $WORKDIR/.opticks ]]
   then
     ohai "Found existing $WORKDIR/.opticks. Will use it"
-    docker exec -it $CONTAINER_ID bash -l -c 'opticks-full-make &> /dev/null'
   else
     ohai "Creating new $WORKDIR/.opticks required by opticks"
     docker exec -it $CONTAINER_ID sh -c 'cp -r $ESI_DIR/.opticks $HOME/'
-    docker exec -it $CONTAINER_ID bash -l -c 'opticks-full &> /dev/null'
   fi
 
   docker exec -it $CONTAINER_ID /opt/nvidia/nvidia_entrypoint.sh
