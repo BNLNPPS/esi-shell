@@ -21,9 +21,10 @@ curl -Os https://bnlnpps.github.io/esi-opticks/esi-shell && chmod u+x esi-shell
 ./esi-shell
 ```
 
-Once the container is up, you can run the opticks tests:
+Once the container is up, you can build the code relying on GPU functionality and run the opticks tests:
 
 ```shell
+opticks-full
 opticks-t
 ```
 
