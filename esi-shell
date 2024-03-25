@@ -282,11 +282,6 @@ then
   docker exec -it $CONTAINER_ID /opt/nvidia/nvidia_entrypoint.sh
   confirm "Stop and remove container? [Y/n]" yes && docker rm -f $CONTAINER_ID || ohai "Remove container manually: docker rm -f $CONTAINER_ID"
 
-elif [[ -n "${USABLE_SINGULARITY-}" ]]
-then
-  cmd="singularity exec -e docker://$IMG bash -l"
-  ohai "Running: $cmd"
-  exec $cmd
 else
-  abort "Either singularity (>= $REQUIRED_SINGULARITY_VERSION) or docker (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
+  abort "Docker client (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
 fi
