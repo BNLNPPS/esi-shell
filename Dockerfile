@@ -53,7 +53,6 @@ ENV PYTHONPATH=${OPTICKS_HOME}
 
 COPY epic $ESI_DIR/epic
 COPY opticks $ESI_DIR/opticks
-COPY patches $ESI_DIR/patches
 COPY .opticks $ESI_DIR/.opticks
 
 WORKDIR $OPTICKS_HOME
@@ -63,8 +62,6 @@ COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
     source $OPTICKS_HOME/opticks.bash
     opticks-
 EOF
-
-RUN patch -p1 CSGOptiX/OPT.h $ESI_DIR/patches/0001-fix-add-missing-support-for-OptiX-7.6.patch
 
 RUN opticks-full-externals
 RUN <<EOF
