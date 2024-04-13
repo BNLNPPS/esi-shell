@@ -28,12 +28,23 @@ RUN <<EOF
     spack clean -a
 EOF
 
-
 # Strip all the binaries
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
 
 RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g' /opt/nvidia/nvidia_entrypoint.sh
+
+COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
+    include:
+      - CPATH
+    lib64:
+      - LD_LIBRARY_PATH
+    lib:
+      - LD_LIBRARY_PATH
+EOF
+
+RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
 RUN sed -i 's/       autoload: direct/\       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
+
 RUN spack module tcl refresh -y
 RUN cp -r /opt/spack/share/spack/modules/$(spack arch) /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
