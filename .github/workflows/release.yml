@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - semrel
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Important for Semantic Release to analyze all commits
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Run Semantic Release
+      run: |
+        npm install
+        npx semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
