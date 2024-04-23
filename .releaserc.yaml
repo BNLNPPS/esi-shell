@@ -7,7 +7,7 @@ plugins:
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/changelog"
   - path: "@semantic-release/npm"
-    - npmPublish: false
+    npmPublish: false
   - path: "@semantic-release/git"
     assets:
       - "CHANGELOG.md"
