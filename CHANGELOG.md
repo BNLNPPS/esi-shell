@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0...1.1.0) (2024-04-23)
+
+
+### Bug Fixes
+
+* do not publish to a npm registry ([83924e4](https://github.com/BNLNPPS/esi-opticks/commit/83924e4b3c8080e39d5df036164ff21850eede6b))
+* sem release config ([d1beef1](https://github.com/BNLNPPS/esi-opticks/commit/d1beef111333ec18d74cb8b322d6a24e62d6d704))
+* sem release config ([477c23f](https://github.com/BNLNPPS/esi-opticks/commit/477c23fd0235f56504c82084a975f38ace69b701))
+
+
+### Features
+
+* use sematic-release/npm plugin to update package.json ([#31](https://github.com/BNLNPPS/esi-opticks/issues/31)) ([f51fb6b](https://github.com/BNLNPPS/esi-opticks/commit/f51fb6b61a66bd24539d379f53bc6b9c2b0e3509))
+
 # 1.0.0 (2024-04-23)
 
 
