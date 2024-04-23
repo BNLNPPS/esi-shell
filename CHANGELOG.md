@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/BNLNPPS/esi-opticks/compare/1.1.0...1.1.1) (2024-04-23)
+
+
+### Bug Fixes
+
+* do not skip ci jobs ([0336353](https://github.com/BNLNPPS/esi-opticks/commit/0336353f18f9d4480a5dfc1cd679c387233e588c))
+
 # [1.1.0](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0...1.1.0) (2024-04-23)
 
 
