@@ -1,6 +1,6 @@
 # See https://semantic-release.gitbook.io/semantic-release/usage/configuration
 branches:
-  - main
+  - semrel
 tagFormat: '${version}' # without this, the tag is prefixed with a 'v'
 plugins:
   - "@semantic-release/commit-analyzer"
