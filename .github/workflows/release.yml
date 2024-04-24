@@ -6,16 +6,80 @@ on:
       - semrel
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Define environment variables
+        run: |
+          echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          #echo TAG=$(echo ${{ github.ref }} | tr '[:upper:]' '[:lower:]' | awk '{split($0, a, "/"); print a[3]}' | tr '+' '-') >> $GITHUB_ENV
+          #echo TAG=$(echo ${{ github.sha }}) >> $GITHUB_ENV
+          echo IMAGE_SHA=ghcr.io/${{ env.REPOSITORY }}/esi-opticks:${{ github.sha }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Container
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile.test
+          tags: ${{ env.IMAGE_SHA }}
+          #cache-from: type=registry,ref=user/app:latest
+          cache-to: type=inline
+          #outputs: type=docker,dest=/tmp/esi-opticks-${{ github.sha }}.tar
+
+      #- name: Upload image for test jobs
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: esi-opticks-${{ github.sha }}
+      #    path: /tmp/esi-opticks-${{ github.sha }}.tar
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Define environment variables
+        run: |
+          echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          echo IMAGE_SHA=ghcr.io/${{ env.REPOSITORY }}/esi-opticks:${{ github.sha }}
+      #- name: Download Image
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: esi-opticks-${{ github.sha }}
+      #    path: /tmp
+
+      - name: Run tests
+        run: |
+          #docker load --input /tmp/esi-opticks-${{ github.sha }}.tar
+          docker run ${{ env.IMAGE_SHA }} curl --version
+
   release:
     runs-on: ubuntu-latest
-
+    needs: test
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  # Important for Semantic Release to analyze all commits
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for Semantic Release to analyze all commits
 
-    - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@v4
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Semantic Release
+      #  uses: cycjimmy/semantic-release-action@v4
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      #- name: Download Image
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: esi-opticks-${{ github.sha }}
+      #    path: /tmp
+
+      #- name: Release
+      #  run: |
+      #    docker load --input /tmp/esi-opticks-${{ github.sha }}.tar
+      #    docker tag ghcr.io/${{ github.repository_owner }}/esi-opticks:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/esi-opticks:latest
+      #    docker tag ghcr.io/${{ github.repository_owner }}/esi-opticks:${{ github.sha }} ghcr.io/${{ github.repository_owner }}/esi-opticks:latest
+      #    ${{ steps.semantic.outputs.new_release_version }}
+      #    docker push ghcr.io/${{ github.repository_owner }}/esi-opticks:${{ github.sha }}
