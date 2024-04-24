@@ -15,14 +15,7 @@ jobs:
       with:
         fetch-depth: 0  # Important for Semantic Release to analyze all commits
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '21'
-
-    - name: Run Semantic Release
-      run: |
-        npm install
-        npx semantic-release
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
