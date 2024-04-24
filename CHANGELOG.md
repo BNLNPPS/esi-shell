@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/BNLNPPS/esi-opticks/compare/1.1.1...1.1.2) (2024-04-24)
+
+
+### Bug Fixes
+
+* restore build-pull-request workflow ([b3629a8](https://github.com/BNLNPPS/esi-opticks/commit/b3629a8498a81a75425d4043d1312023e853423e))
+
 ## [1.1.1](https://github.com/BNLNPPS/esi-opticks/compare/1.1.0...1.1.1) (2024-04-23)
 
 
