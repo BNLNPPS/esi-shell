@@ -26,7 +26,7 @@ REQUIRED_SINGULARITY_VERSION=3.7.4
 REQUIRED_DOCKER_VERSION=23.0.0
 
 # set default values
-IMAGE_NAME="bnlnpps/esi-opticks"
+IMAGE_NAME="ghcr.io/bnlnpps/esi-opticks"
 DEFAULT_VERSION="latest"
 VERSION=$DEFAULT_VERSION
 
@@ -195,8 +195,7 @@ find_tool() {
 }
 
 # Call with a prompt string or use a default
-confirm()
-{
+confirm() {
   read -r -p "${1:-Are you sure? [y/n]} " response
   if [[ "${response:=$2}" =~ ^([yY][eE][sS]|[yY])+$ ]]
   then
