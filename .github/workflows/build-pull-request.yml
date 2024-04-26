@@ -11,11 +11,11 @@ concurrency:
 
 jobs:
   build-container:
-    runs-on: ubuntu-latest
+    runs-on: [gpu]
     steps:
       - name: Define environment variables
         run: |
-          echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          echo REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           echo TAG=$(echo "PR-${{ github.event.pull_request.number }}") >> $GITHUB_ENV
 
       - name: Set up docker
@@ -24,8 +24,9 @@ jobs:
       - name: Build container
         uses: docker/build-push-action@v5
         with:
-          tags: ghcr.io/${{ env.REPOSITORY }}:${{ env.TAG }}
+          tags: ${{ env.REPOSITORY }}:${{ env.TAG }}
           outputs: type=docker,dest=/tmp/esi-opticks-${{ env.TAG }}.tar
+          cache-from: ${{ env.IMAGE_NAME }}:latest
 
       - name: Save built image for test jobs
         uses: actions/upload-artifact@v4
@@ -39,7 +40,7 @@ jobs:
     steps:
       - name: Define environment variables
         run: |
-          echo REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+          echo REPOSITORY=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           echo TAG=$(echo "PR-${{ github.event.pull_request.number }}") >> $GITHUB_ENV
 
       - name: Download artifact
@@ -51,4 +52,4 @@ jobs:
       - name: Run tests
         run: |
           docker load --input /tmp/esi-opticks-${{ env.TAG }}.tar
-          docker run ghcr.io/${{ env.REPOSITORY }}:${{ env.TAG }} bash -l -c opticks-info
+          docker run ${{ env.REPOSITORY }}:${{ env.TAG }} bash -l -c opticks-info
