@@ -56,4 +56,4 @@ jobs:
       - name: Run tests
         run: |
           docker load --input /tmp/esi-opticks-${{ env.TAG }}.tar
-          docker run ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c opticks-info
+          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c opticks-info
