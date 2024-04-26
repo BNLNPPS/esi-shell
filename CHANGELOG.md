@@ -1,3 +1,11 @@
+# [1.0.0-beta.2](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0-beta.1...1.0.0-beta.2) (2024-04-26)
+
+
+### Bug Fixes
+
+* **eic-shell:** switch to ghcr.io registry ([928acba](https://github.com/BNLNPPS/esi-opticks/commit/928acba495e3865e5d986e899de8993abcd63768))
+* remove container after tests ([105a4ba](https://github.com/BNLNPPS/esi-opticks/commit/105a4ba3d2de5db92c96e451a40e5fcc50a96a4d))
+
 # 1.0.0-beta.1 (2024-04-26)
 
 
