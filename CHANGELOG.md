@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0-beta.2...1.0.0-beta.3) (2024-05-03)
+
+
+### Features
+
+* upgrade opticks ([#39](https://github.com/BNLNPPS/esi-opticks/issues/39)) ([2d6706a](https://github.com/BNLNPPS/esi-opticks/commit/2d6706a0ccf8bb79b55a538c1437464ab5462648))
+
 # [1.0.0-beta.2](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0-beta.1...1.0.0-beta.2) (2024-04-26)
 
 
