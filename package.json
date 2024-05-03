@@ -1,16 +1,16 @@
 {
-  "name": "esi-opticks",
+  "name": "esi-shell",
   "version": "1.0.0-beta.3",
   "description": "EIC Simulation Infrastructure",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BNLNPPS/esi-opticks.git"
+    "url": "git+https://github.com/BNLNPPS/esi-shell.git"
   },
   "keywords": [],
   "author": "BNL NPPS",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/BNLNPPS/esi-opticks/issues"
+    "url": "https://github.com/BNLNPPS/esi-shell/issues"
   },
-  "homepage": "https://github.com/BNLNPPS/esi-opticks#readme"
+  "homepage": "https://github.com/BNLNPPS/esi-shell#readme"
 }

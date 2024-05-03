@@ -12,7 +12,7 @@ args = parser.parse_args()
 domain = "api.github.com"
 org = "BNLNPPS"
 package_type = "container"
-package_name = "esi-opticks"
+package_name = "esi-shell"
 
 api_url = f"https://{domain}/orgs/{org}/packages/{package_type}/{package_name}/versions"
 

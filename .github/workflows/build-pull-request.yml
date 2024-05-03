@@ -21,22 +21,19 @@ jobs:
       - name: Set up docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Pull latest image as cache
-        run: docker pull ${{ env.IMAGE_NAME }}:latest
-
       - name: Build image locally
         uses: docker/build-push-action@v5
         with:
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          outputs: type=docker,dest=/tmp/esi-opticks-${{ env.TAG }}.tar
+          outputs: type=docker,dest=/tmp/esi-shell-${{ env.TAG }}.tar
           cache-from: ${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
       - name: Save built image for test jobs
         uses: actions/upload-artifact@v4
         with:
-          name: esi-opticks-${{ env.TAG }}
-          path: /tmp/esi-opticks-${{ env.TAG }}.tar
+          name: esi-shell-${{ env.TAG }}
+          path: /tmp/esi-shell-${{ env.TAG }}.tar
 
   test:
     runs-on: ubuntu-latest
@@ -50,10 +47,10 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: esi-opticks-${{ env.TAG }}
+          name: esi-shell-${{ env.TAG }}
           path: /tmp
 
       - name: Run tests
         run: |
-          docker load --input /tmp/esi-opticks-${{ env.TAG }}.tar
+          docker load --input /tmp/esi-shell-${{ env.TAG }}.tar
           docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c opticks-info
