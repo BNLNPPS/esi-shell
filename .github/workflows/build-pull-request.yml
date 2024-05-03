@@ -21,14 +21,12 @@ jobs:
       - name: Set up docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Pull latest image as cache
-        run: docker pull ${{ env.IMAGE_NAME }}:latest
-
       - name: Build image locally
         uses: docker/build-push-action@v5
         with:
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           outputs: type=docker,dest=/tmp/esi-shell-${{ env.TAG }}.tar
+          cache-from: ${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
       - name: Save built image for test jobs
