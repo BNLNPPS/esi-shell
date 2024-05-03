@@ -29,7 +29,6 @@ jobs:
         with:
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           outputs: type=docker,dest=/tmp/esi-shell-${{ env.TAG }}.tar
-          cache-from: ${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
       - name: Save built image for test jobs
