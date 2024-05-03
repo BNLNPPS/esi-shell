@@ -54,7 +54,7 @@ RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
 # create a placeholder dir for NVIDIA OptiX
 RUN mkdir -p /usr/local/optix
 
-ENV ESI_DIR=/esi-opticks
+ENV ESI_DIR=/esi-shell
 ENV OPTICKS_HOME=$ESI_DIR/opticks
 ENV OPTICKS_PREFIX=/usr/local/opticks
 ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda

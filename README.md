@@ -17,7 +17,7 @@ export OPTIX_DIR=/usr/local/optix
 Next, install and run `esi-shell`:
 
 ```shell
-curl -Os https://bnlnpps.github.io/esi-opticks/esi-shell && chmod u+x esi-shell
+curl -Os https://bnlnpps.github.io/esi-shell/esi-shell && chmod u+x esi-shell
 ./esi-shell
 ```
 
@@ -30,12 +30,12 @@ opticks-t
 
 ### Docker
 
-Here are basic instructions on how to build and run the `esi-opticks` container using Docker:
+Here are basic instructions on how to build and run the `esi-shell` container using Docker:
 
 ```shell
-cd esi-opticks/
-docker build -t bnlnpps/esi-opticks .
-docker run --rm -it bnlnpps/esi-opticks
+cd esi-shell/
+docker build -t bnlnpps/esi-shell .
+docker run --rm -it bnlnpps/esi-shell
 ```
 
 ---
