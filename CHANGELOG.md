@@ -1,3 +1,15 @@
+# [1.0.0-beta.4](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.3...1.0.0-beta.4) (2024-05-06)
+
+
+### Features
+
+* update opticks ([#42](https://github.com/BNLNPPS/esi-shell/issues/42)) ([4338f7c](https://github.com/BNLNPPS/esi-shell/commit/4338f7c51bb92b643bfbef9cb32920d517f26395)), closes [#41](https://github.com/BNLNPPS/esi-shell/issues/41)
+
+
+### Reverts
+
+* restore removed pull of latest image for cache purposes ([#47](https://github.com/BNLNPPS/esi-shell/issues/47)) ([8138919](https://github.com/BNLNPPS/esi-shell/commit/8138919d14d20646535e0c80c1e1266c04e9543b))
+
 # [1.0.0-beta.3](https://github.com/BNLNPPS/esi-opticks/compare/1.0.0-beta.2...1.0.0-beta.3) (2024-05-03)
 
 
