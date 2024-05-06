@@ -52,33 +52,28 @@ RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_mod
 RUN spack module tcl loads geant4 clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
 
-# create a placeholder dir for NVIDIA OptiX
-RUN mkdir -p /usr/local/optix
-
-ENV ESI_DIR=/esi-shell
-ENV OPTICKS_HOME=$ESI_DIR/opticks
+ENV ESI_DIR=/esi
+ENV OPTIX_DIR=/usr/local/optix
+ENV OPTICKS_HOME=${ESI_DIR}/opticks
 ENV OPTICKS_PREFIX=/usr/local/opticks
 ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
-ENV OPTICKS_OPTIX_PREFIX=/usr/local/optix
+ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=52
 ENV PYTHONPATH=${OPTICKS_HOME}
+ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib/:$LD_LIBRARY_PATH
 
-COPY epic $ESI_DIR/epic
-COPY opticks $ESI_DIR/opticks
-COPY .opticks $ESI_DIR/.opticks
+WORKDIR $ESI_DIR
 
-WORKDIR $OPTICKS_HOME
+COPY epic epic
+COPY opticks opticks
+COPY .opticks .opticks
+COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 
-RUN mkdir -p $ESI_DIR
 COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
     source $OPTICKS_HOME/opticks.bash
     opticks-
 EOF
 
-RUN opticks-full-externals
-RUN <<EOF
-    source om.bash
-    om-(){ echo "skip sourcing om.bash"; }
-    om-subs--all(){ deps=(okconf sysrap ana analytic bin CSG qudarap gdxml u4); printf '%s\n' "${deps[@]}"; }
-    opticks-full-make
-EOF
+RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
+RUN HOME=$ESI_DIR opticks-full
+RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
