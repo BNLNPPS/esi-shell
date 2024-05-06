@@ -10,6 +10,7 @@ RUN apt update \
     libglm-dev libglfw3-dev libimgui-dev libglew-dev libglu1-mesa-dev \
     libssl-dev python-is-python3 \
     cuda-nvcc-11-8 libcurand-dev-11-8 \
+    libxinerama-dev libxcursor-dev libxi-dev \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
