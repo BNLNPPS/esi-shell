@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.4...1.0.0-beta.5) (2024-05-07)
+
+
+### Reverts
+
+* Revert "feat: build gpu code dependent on OptiX, run opticks tests (#49)" ([a301bd2](https://github.com/BNLNPPS/esi-shell/commit/a301bd290c43476ef5fa674ce7cc52f326fa29e9)), closes [#49](https://github.com/BNLNPPS/esi-shell/issues/49)
+
 # [1.0.0-beta.4](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.3...1.0.0-beta.4) (2024-05-06)
 
 
