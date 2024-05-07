@@ -18,15 +18,21 @@ jobs:
           echo IMAGE_NAME=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           echo TAG=$(echo "PR-${{ github.event.pull_request.number }}") >> $GITHUB_ENV
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Copy external assets
+        run: cp /home/runner/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+
       - name: Set up docker
         uses: docker/setup-buildx-action@v3
-
-      - name: Pull latest image as cache
-        run: docker pull ${{ env.IMAGE_NAME }}:latest
 
       - name: Build image locally
         uses: docker/build-push-action@v5
         with:
+          context: .
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           outputs: type=docker,dest=/tmp/esi-shell-${{ env.TAG }}.tar
           cache-from: ${{ env.IMAGE_NAME }}:latest
@@ -39,7 +45,7 @@ jobs:
           path: /tmp/esi-shell-${{ env.TAG }}.tar
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: [gpu]
     needs: build
     steps:
       - name: Define environment variables
@@ -56,4 +62,5 @@ jobs:
       - name: Run tests
         run: |
           docker load --input /tmp/esi-shell-${{ env.TAG }}.tar
-          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c opticks-info
+          rm -fr /tmp/esi-shell-${{ env.TAG }}.tar
+          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c 'HOME=$ESI_DIR opticks-full-prepare && HOME=$ESI_DIR opticks-t'
