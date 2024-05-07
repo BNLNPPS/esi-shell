@@ -1,3 +1,10 @@
+# [1.0.0-beta.6](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.5...1.0.0-beta.6) (2024-05-07)
+
+
+### Features
+
+* build gpu code dependent on OptiX, run opticks tests ([#49](https://github.com/BNLNPPS/esi-shell/issues/49)) ([#53](https://github.com/BNLNPPS/esi-shell/issues/53)) ([5f58b7b](https://github.com/BNLNPPS/esi-shell/commit/5f58b7be7d1893ba7247de5b95f43a7349aa4cf8)), closes [#50](https://github.com/BNLNPPS/esi-shell/issues/50)
+
 # [1.0.0-beta.5](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.4...1.0.0-beta.5) (2024-05-07)
 
 
