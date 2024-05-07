@@ -10,7 +10,7 @@ concurrency:
    cancel-in-progress: true
 
 jobs:
-  build:
+  build-test:
     runs-on: [gpu]
     steps:
       - name: Define environment variables
@@ -29,38 +29,17 @@ jobs:
       - name: Set up docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Build image locally
+      - name: Build and export to Docker
         uses: docker/build-push-action@v5
         with:
           context: .
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          outputs: type=docker,dest=/tmp/esi-shell-${{ env.TAG }}.tar
-          cache-from: ${{ env.IMAGE_NAME }}:latest
-          cache-to: type=inline
-
-      - name: Save built image for test jobs
-        uses: actions/upload-artifact@v4
-        with:
-          name: esi-shell-${{ env.TAG }}
-          path: /tmp/esi-shell-${{ env.TAG }}.tar
-
-  test:
-    runs-on: [gpu]
-    needs: build
-    steps:
-      - name: Define environment variables
-        run: |
-          echo IMAGE_NAME=ghcr.io/$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-          echo TAG=$(echo "PR-${{ github.event.pull_request.number }}") >> $GITHUB_ENV
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: esi-shell-${{ env.TAG }}
-          path: /tmp
+          load: true
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE_NAME }}:latest
+            type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run tests
         run: |
-          docker load --input /tmp/esi-shell-${{ env.TAG }}.tar
-          rm -fr /tmp/esi-shell-${{ env.TAG }}.tar
           docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c 'HOME=$ESI_DIR opticks-full-prepare && HOME=$ESI_DIR opticks-t'
