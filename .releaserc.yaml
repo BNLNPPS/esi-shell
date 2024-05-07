@@ -4,6 +4,8 @@ branches:
   - 'main'
   - name: 'beta'
     prerelease: true
+  - name: 'betatest'
+    prerelease: true
 tagFormat: '${version}' # without this, the tag is prefixed with a 'v'
 plugins:
   - "@semantic-release/commit-analyzer"
