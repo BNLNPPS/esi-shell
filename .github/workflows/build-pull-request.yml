@@ -35,10 +35,8 @@ jobs:
           context: .
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           load: true
-          cache-from: |
-            type=registry,ref=${{ env.IMAGE_NAME }}:latest
-            type=gha
-          cache-to: type=gha,mode=max
+          cache-from: ${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
 
       - name: Run tests
         run: |
