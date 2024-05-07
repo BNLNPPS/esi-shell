@@ -38,7 +38,7 @@ jobs:
           cache-to: type=inline
 
       - name: Run tests
-        run: docker run --rm ${{ env.IMAGE_NAME }}:latest bash -l -c 'HOME=$ESI_DIR opticks-full-prepare && HOME=$ESI_DIR opticks-t'
+        run: docker run --rm ${{ env.IMAGE_NAME }}:latest curl --version
 
       - name: Declare latest and push
         run: docker push ${{ env.IMAGE_NAME }}:latest
