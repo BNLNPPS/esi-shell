@@ -40,4 +40,4 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} bash -l -c 'HOME=$ESI_DIR opticks-full-prepare && HOME=$ESI_DIR opticks-t'
+          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} tests/test_opticks.sh
