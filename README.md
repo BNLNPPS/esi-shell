@@ -30,13 +30,31 @@ opticks-t
 
 ### Docker
 
-Here are basic instructions on how to build and run the `esi-opticks` container using Docker:
+* Create a personal access token with privilege to download packages from github package registry
+<img width="992" alt="Screenshot 2024-05-07 at 9 36 36 PM" src="https://github.com/BNLNPPS/esi-shell/assets/7409132/c58477d6-80a9-4a57-855a-20f755c9a0c8">
 
-```shell
-cd esi-opticks/
-docker build -t bnlnpps/esi-opticks .
-docker run --rm -it bnlnpps/esi-opticks
-```
+* Login to github package registry with your token.
+  
+  ```shell
+    export TOKEN=<YOUR_TOKEN>
+    echo $TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+  ```
+* Pull the tagged release you want to run from the registry. For example:
+  
+  ```shell
+   docker pull ghcr.io/bnlnpps/esi-shell:1.0.0-beta.6
+  ```
+* Run the tagged release with the local nvidia optix installation
+
+  ```shell
+    docker run --rm -it --gpus all -v /usr/local/optix:/usr/local/optix -e HOME=/esi-shell ghcr.io/bnlnpps/esi-shell:1.0.0-beta.4
+  ```
+* Build the code and run unit tests
+
+  ```shell
+    opticks-full
+    opticks-t
+  ```
 
 ---
 
