@@ -67,6 +67,7 @@ WORKDIR $ESI_DIR
 COPY epic epic
 COPY opticks opticks
 COPY .opticks .opticks
+COPY tests tests
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 
 COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
