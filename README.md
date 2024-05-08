@@ -49,6 +49,17 @@ opticks-t
   ```shell
     docker run --rm -it --gpus all -v /usr/local/optix:/usr/local/optix -e HOME=/esi-shell ghcr.io/bnlnpps/esi-shell:1.0.0-beta.4
   ```
+
+  Explanation of the docker command:
+  ```
+  docker run: Instructs Docker to run a container.
+  --rm: Ensures that the container is removed after it stops running.
+  -it:  Make the container interactive.
+  --gpus all: Specifies that all available GPUs should be accessible within the container.
+  -v /usr/local/optix:/usr/local/optix: Mounts the host directory /usr/local/optix into the container at the same location.
+  -e HOME=/esi-shell: Sets the environment variable HOME to /esi-shell within the container.
+  ghcr.io/bnlnpps/esi-shell:1.0.0-beta.4: Image and tag in github package registry. 
+  ```
 * Build the code and run unit tests
 
   ```shell
