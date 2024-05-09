@@ -42,12 +42,14 @@ opticks-t
 * Pull the tagged release you want to run from the registry. For example:
   
   ```shell
-   docker pull ghcr.io/bnlnpps/esi-shell:1.0.0-beta.6
+   docker pull ghcr.io/bnlnpps/esi-shell:latest
   ```
+  The list of all tagged releases can be found [here](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell).
+  
 * Run the tagged release with the local nvidia optix installation
 
   ```shell
-    docker run --rm -it --gpus all -v /usr/local/optix:/usr/local/optix -e HOME=/esi-shell ghcr.io/bnlnpps/esi-shell:1.0.0-beta.4
+    docker run --rm -it --gpus all -v /usr/local/optix:/usr/local/optix -e HOME=/esi-shell ghcr.io/bnlnpps/esi-shell:latest
   ```
 
   Explanation of the docker command:
