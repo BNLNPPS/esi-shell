@@ -11,6 +11,7 @@ RUN apt update \
     libssl-dev python-is-python3 \
     cuda-nvcc-11-8 libcurand-dev-11-8 \
     libxinerama-dev libxcursor-dev libxi-dev \
+    nano vim \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -25,7 +26,6 @@ RUN <<EOF
     spack install boost+system+program_options+regex+filesystem
     spack install cmake
     spack install nlohmann-json
-    spack install vim
     spack uninstall -f -y g4ndl g4emlow
     spack clean -a
 EOF
