@@ -25,6 +25,7 @@ RUN <<EOF
     spack install boost+system+program_options+regex+filesystem
     spack install cmake
     spack install nlohmann-json
+    spack install vim
     spack uninstall -f -y g4ndl g4emlow
     spack clean -a
 EOF
