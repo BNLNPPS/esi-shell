@@ -11,6 +11,7 @@ RUN apt update \
     libssl-dev python-is-python3 \
     cuda-nvcc-11-8 libcurand-dev-11-8 \
     libxinerama-dev libxcursor-dev libxi-dev \
+    nano vim \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
