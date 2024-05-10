@@ -72,6 +72,7 @@ jobs:
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ steps.semantic.outputs.new_release_version }}
           push: true
+          provenance: false
           cache-from: ${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
