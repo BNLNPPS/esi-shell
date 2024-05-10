@@ -41,3 +41,4 @@ jobs:
       - name: Run tests
         run: |
           docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} tests/test_opticks.sh
+          docker rmi ${{ env.IMAGE_NAME }}:${{ env.TAG }}
