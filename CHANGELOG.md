@@ -1,3 +1,10 @@
+# [1.0.0-beta.7](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.6...1.0.0-beta.7) (2024-05-10)
+
+
+### Bug Fixes
+
+* always pull updated image from registry ([#62](https://github.com/BNLNPPS/esi-shell/issues/62)) ([33f5b06](https://github.com/BNLNPPS/esi-shell/commit/33f5b0614ecd4ce3918492c22a087aa395767932))
+
 # [1.0.0-beta.6](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.5...1.0.0-beta.6) (2024-05-07)
 
 
