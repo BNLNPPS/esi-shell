@@ -256,7 +256,7 @@ ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
 then
-  cmd="docker run --rm -dit ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR -e HOME=$WORKDIR -w=$WORKDIR $IMG"
+  cmd="docker run --rm -dit --pull=always ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR -e HOME=$WORKDIR -w=$WORKDIR $IMG"
   CONTAINER_ID=$(exec $cmd)
 
   if [ $? -ne 0 ]
