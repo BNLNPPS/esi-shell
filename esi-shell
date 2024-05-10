@@ -29,21 +29,34 @@ REQUIRED_DOCKER_VERSION=23.0.0
 IMAGE_NAME="ghcr.io/bnlnpps/esi-shell"
 DEFAULT_VERSION="latest"
 VERSION=$DEFAULT_VERSION
+CONTAINER_COMMAND=
+CONTAINER_OPTIONS=
 
 usage() {
   echo "Start esi-shell, the ESI containerized software environment."
   echo ""
   echo "USAGE:"
-  echo "  ./esi-shell [OPTIONS] [ -- COMMAND ]"
+  echo "  ./esi-shell [OPTIONS] [COMMAND] [-- CONTAINER_OPTIONS]"
   echo ""
-  echo "OPTIONAL ARGUMENTS:"
-  echo "  -v, --version    Version to install (Default: $DEFAULT_VERSION)"
+  echo "OPTIONS:"
+  echo "  -v, --version    Specific esi-shell version to use (Default: $DEFAULT_VERSION)"
   echo "  -h, --help       Print this message"
+  echo ""
+  echo "COMMAND is a command to execute in the container, leave it empty for interactive shell. For example:"
+  echo "  pwd"
+  echo "  ls -la"
+  echo "  echo '\$HOME'"
+  echo "  tests/test_opticks.sh"
+  echo ""
+  echo "CONTAINER_OPTIONS will be passed to the underlying container command. For example:"
+  echo "  -- --volume \$PWD/mytests:/tmp/mytests"
+  echo "  -- -v \$HOME/optix:/usr/local/optix -e OPTICKS_OPTIX_PREFIX=/usr/local/optix"
   echo ""
   echo "EXAMPLES:"
   echo "  - Start an interactive shell: ./esi-shell" 
-  echo "  - Use different version:      ./esi-shell -v 0.1.0"
-  echo "  - Execute a single command:   ./esi-shell -- <COMMAND>"
+  echo "  - Use specific version:       ./esi-shell -v 0.1.0"
+  echo "  - Execute a single command:   ./esi-shell echo \$OPTIX_DIR"
+  echo "  - Configure remote image:     ./esi-shell -- --pull=always -e HOME=\$HOME"
   echo ""
   exit "${1:-0}"
 }
@@ -86,7 +99,7 @@ warn() {
 }
 
 
-while [ $# -gt 0 ]
+while [[ $# -gt 0 ]]
 do
   case $1 in
     -v | --version)
@@ -95,15 +108,24 @@ do
       shift
       ;;
     -h | --help)
-      usage
+      usage 0
       ;;
     --)
       shift
+      CONTAINER_OPTIONS="$@"
+      break
+      ;;
+    -*)
+      warn "Unrecognized option: '$1'"
+      usage 1
       break
       ;;
     *)
-      warn "Unrecognized option: '$1'"
-      usage 1
+      _ALL_OTHER_ARGS="$@"
+      CONTAINER_COMMAND=${_ALL_OTHER_ARGS%% -- *}
+      CONTAINER_OPTIONS=${_ALL_OTHER_ARGS#* -- }
+      CONTAINER_OPTIONS=$([[ $CONTAINER_OPTIONS == $CONTAINER_COMMAND ]] && echo "" || echo $CONTAINER_OPTIONS)
+      break
       ;;
   esac
 done
@@ -256,9 +278,8 @@ ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
 then
-  cmd="docker run --rm -it ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR $IMG"
+  cmd="docker run --rm -it ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=${OPTIX_DIR} ${CONTAINER_OPTIONS} ${IMG} ${CONTAINER_COMMAND}"
   exec $cmd
-
 else
   abort "Docker client (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
 fi
