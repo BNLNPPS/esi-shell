@@ -1,3 +1,10 @@
+# [1.0.0-beta.8](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.7...1.0.0-beta.8) (2024-05-13)
+
+
+### Bug Fixes
+
+* **env:** load xerces-c, update PATH ([#66](https://github.com/BNLNPPS/esi-shell/issues/66)) ([044e0ba](https://github.com/BNLNPPS/esi-shell/commit/044e0ba7bff3e4c3e4d3465376341cd7fcddddde))
+
 # [1.0.0-beta.7](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.6...1.0.0-beta.7) (2024-05-10)
 
 
