@@ -50,7 +50,7 @@ RUN sed -i 's/       autoload: direct/\       autoload: none/g'  /opt/spack/etc/
 RUN spack module tcl refresh -y
 RUN cp -r /opt/spack/share/spack/modules/$(spack arch) /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4 clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
+RUN spack module tcl loads geant4 xerces-c clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
 
 ENV ESI_DIR=/esi
@@ -62,6 +62,7 @@ ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=52
 ENV PYTHONPATH=${OPTICKS_HOME}
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib/:$LD_LIBRARY_PATH
+ENV PATH=${OPTICKS_PREFIX}/lib:${PATH:+${PATH}}
 
 WORKDIR $ESI_DIR
 
