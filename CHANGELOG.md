@@ -1,3 +1,10 @@
+# [1.0.0-beta.9](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.8...1.0.0-beta.9) (2024-05-14)
+
+
+### Bug Fixes
+
+* **shell:** enable optix with driver capabilities ([#69](https://github.com/BNLNPPS/esi-shell/issues/69)) ([6b4ea3f](https://github.com/BNLNPPS/esi-shell/commit/6b4ea3fa1142928c5762904cf68b325e30abbde6)), closes [#68](https://github.com/BNLNPPS/esi-shell/issues/68)
+
 # [1.0.0-beta.8](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.7...1.0.0-beta.8) (2024-05-13)
 
 
