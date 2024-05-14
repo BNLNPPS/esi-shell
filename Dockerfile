@@ -26,7 +26,7 @@ RUN <<EOF
     spack install boost+system+program_options+regex+filesystem
     spack install cmake
     spack install nlohmann-json
-    spack uninstall -f -y g4ndl g4emlow
+    spack uninstall -f -y g4ndl
     spack clean -a
 EOF
 
