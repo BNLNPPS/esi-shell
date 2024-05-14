@@ -1,3 +1,10 @@
+# [1.0.0-beta.10](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.9...1.0.0-beta.10) (2024-05-14)
+
+
+### Bug Fixes
+
+* **env:** keep g4emlow ([a3761be](https://github.com/BNLNPPS/esi-shell/commit/a3761be84a2277ad610ea58b92b85aff906d58a2))
+
 # [1.0.0-beta.9](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.8...1.0.0-beta.9) (2024-05-14)
 
 
