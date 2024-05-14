@@ -1,7 +1,5 @@
 # syntax=docker/dockerfile:latest
 
-ARG NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
-
 FROM nvcr.io/nvidia/cuda:11.8.0-runtime-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -65,6 +63,7 @@ ENV OPTICKS_COMPUTE_CAPABILITY=52
 ENV PYTHONPATH=${OPTICKS_HOME}
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
 ENV PATH=${OPTICKS_PREFIX}/lib:${PATH}
+ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
 
 WORKDIR $ESI_DIR
 
