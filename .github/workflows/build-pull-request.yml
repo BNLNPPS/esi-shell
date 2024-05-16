@@ -42,7 +42,9 @@ jobs:
           context: .
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           load: true
-          cache-from: type=gha
+          cache-from: |
+            ${{ env.IMAGE_NAME }}:latest
+            type=gha
           cache-to: type=gha,mode=max
 
       - name: Run tests
