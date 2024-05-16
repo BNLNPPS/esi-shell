@@ -33,7 +33,8 @@ EOF
 # Strip all the binaries
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
 
-RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g' /opt/nvidia/nvidia_entrypoint.sh
+RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g'  /opt/nvidia/nvidia_entrypoint.sh \
+ && sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-l" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
 COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
     include:
