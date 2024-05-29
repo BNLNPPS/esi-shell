@@ -256,28 +256,8 @@ ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
 then
-  cmd="docker run --rm -dit ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR $IMG"
-  CONTAINER_ID=$(exec $cmd)
-
-  if [ $? -ne 0 ]
-  then
-    abort "Failed to start esi-shell"
-  fi
-
-  CONTAINER_ID=$(echo $CONTAINER_ID | cut -c -12)
-  ohai "Running docker container $CONTAINER_ID"
-
-  ohai "Setting up opticks environment. Please wait..."
-  if [[ -d $WORKDIR/.opticks ]]
-  then
-    ohai "Found existing $WORKDIR/.opticks. Will use it"
-  else
-    ohai "Creating new $WORKDIR/.opticks required by opticks"
-    docker exec -it $CONTAINER_ID sh -c 'cp -r $ESI_DIR/.opticks $HOME/'
-  fi
-
-  docker exec -it $CONTAINER_ID /opt/nvidia/nvidia_entrypoint.sh
-  confirm "Stop and remove container? [Y/n]" yes && docker rm -f $CONTAINER_ID || ohai "Remove container manually: docker rm -f $CONTAINER_ID"
+  cmd="docker run --rm -it ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR $IMG"
+  exec $cmd
 
 else
   abort "Docker client (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
