@@ -55,6 +55,7 @@ RUN spack module tcl loads geant4 xerces-c clhep boost cmake nlohmann-json >> /e
 RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
 
 ENV ESI_DIR=/esi
+ENV HOME=$ESI_DIR
 ENV OPTIX_DIR=/usr/local/optix
 ENV OPTICKS_HOME=${ESI_DIR}/opticks
 ENV OPTICKS_PREFIX=/usr/local/opticks
@@ -80,5 +81,5 @@ COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
 EOF
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN HOME=$ESI_DIR opticks-full
+RUN opticks-full
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
