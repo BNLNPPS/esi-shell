@@ -69,11 +69,14 @@ ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
 
 WORKDIR $ESI_DIR
 
+COPY .opticks .opticks
 COPY epic epic
 COPY opticks opticks
-COPY .opticks .opticks
+COPY patches patches
 COPY tests tests
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+
+RUN patch -p1 opticks/sysrap/sevt.py patches/opticks-fix-update-array-dtype-for-numpy-1.26.patch
 
 COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
     source $OPTICKS_HOME/opticks.bash
