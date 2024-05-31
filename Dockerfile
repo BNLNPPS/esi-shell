@@ -67,6 +67,7 @@ ENV OPTICKS_COMPUTE_CAPABILITY=89
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
 ENV PATH=${OPTICKS_PREFIX}/lib:${PATH}
 ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
+ENV VIRTUAL_ENV_DISABLE_PROMPT=1
 
 WORKDIR $ESI_DIR
 
@@ -79,9 +80,11 @@ COPY README.md .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 COPY pyproject.toml .
 
+RUN poetry install
 RUN patch -p1 opticks/sysrap/sevt.py patches/opticks-fix-update-array-dtype-for-numpy-1.26.patch
 
 COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
+    source $(poetry env info --path)/bin/activate
     source $OPTICKS_HOME/opticks.bash
     opticks-
 EOF
@@ -89,5 +92,3 @@ EOF
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 RUN opticks-full
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
-
-RUN poetry install
