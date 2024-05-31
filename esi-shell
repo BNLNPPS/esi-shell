@@ -270,6 +270,11 @@ done
 #  DOCKER_PLATFORM="--platform linux/amd64"
 #fi
 
+if [[ -z ${CONTAINER_COMMAND-} ]]
+then
+  CONTAINER_OPTIONS+=" -i -t"
+fi
+
 USABLE_SINGULARITY="$(find_tool singularity)"
 USABLE_DOCKER="$(find_tool docker)"
 
@@ -278,7 +283,7 @@ ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
 then
-  cmd="docker run --rm -it ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=${OPTIX_DIR} ${CONTAINER_OPTIONS} ${IMG} ${CONTAINER_COMMAND}"
+  cmd="docker run --rm ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=${OPTIX_DIR} ${CONTAINER_OPTIONS} ${IMG} ${CONTAINER_COMMAND}"
   exec $cmd
 else
   abort "Docker client (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
