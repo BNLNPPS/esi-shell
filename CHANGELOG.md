@@ -1,3 +1,18 @@
+# [1.0.0-beta.11](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.10...1.0.0-beta.11) (2024-05-31)
+
+
+### Bug Fixes
+
+* **env:** activate virtual environment via poetry ([5413d8b](https://github.com/BNLNPPS/esi-shell/commit/5413d8b2949664690b32e91556b5a0da7cd0b9b8))
+* **esi-shell:** run commands without TTY ([71d09ae](https://github.com/BNLNPPS/esi-shell/commit/71d09aead72b7ee821f02842c8906d126dbfbe88))
+* use default HOME and PWD inside container ([#80](https://github.com/BNLNPPS/esi-shell/issues/80)) ([1bf8b2e](https://github.com/BNLNPPS/esi-shell/commit/1bf8b2e731c29011cfe315a63706c6efe440edaa))
+* use single command to execute container commands ([5a0f897](https://github.com/BNLNPPS/esi-shell/commit/5a0f89767baf28fe106dc365b07ed5300283bd12))
+
+
+### Features
+
+* **esi-shell:** exec user command, pass through container options ([1217f36](https://github.com/BNLNPPS/esi-shell/commit/1217f362f3b05e78146bbda07537126815801e75))
+
 # [1.0.0-beta.10](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.9...1.0.0-beta.10) (2024-05-14)
 
 
