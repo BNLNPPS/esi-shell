@@ -42,8 +42,8 @@ jobs:
           cache-from: ${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
 
-      - name: Run tests
-        run: docker run --rm ${{ env.IMAGE_NAME }}:latest tests/test_opticks.sh
+      - name: Test esi-shell
+        run: ./esi-shell "opticks-full-prepare && opticks-t"
 
       - name: Declare latest and push
         run: docker push ${{ env.IMAGE_NAME }}:latest
