@@ -33,6 +33,8 @@ EOF
 # Strip all the binaries
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
 
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
+
 RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g'  /opt/nvidia/nvidia_entrypoint.sh \
  && sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-l" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
@@ -62,7 +64,6 @@ ENV OPTICKS_PREFIX=/usr/local/opticks
 ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
 ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=89
-ENV PYTHONPATH=${OPTICKS_HOME}
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
 ENV PATH=${OPTICKS_PREFIX}/lib:${PATH}
 ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
@@ -74,7 +75,9 @@ COPY epic epic
 COPY opticks opticks
 COPY patches patches
 COPY tests tests
+COPY README.md .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+COPY pyproject.toml .
 
 RUN patch -p1 opticks/sysrap/sevt.py patches/opticks-fix-update-array-dtype-for-numpy-1.26.patch
 
@@ -86,3 +89,5 @@ EOF
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 RUN opticks-full
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+RUN poetry install

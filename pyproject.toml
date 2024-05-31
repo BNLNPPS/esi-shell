@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "esi-shell"
+version = "0.0.0-beta"
+description = ""
+authors = ["BNL NPPS"]
+readme = "README.md"
+packages = [{include = "opticks"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ipython = "^8.24.0"
+numpy = "^1.26.4"
+pyvista = "^0.43.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
