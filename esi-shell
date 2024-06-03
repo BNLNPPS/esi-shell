@@ -124,7 +124,7 @@ do
       _ALL_OTHER_ARGS="$@"
       CONTAINER_COMMAND=${_ALL_OTHER_ARGS%% -- *}
       CONTAINER_OPTIONS=${_ALL_OTHER_ARGS#* -- }
-      CONTAINER_OPTIONS=$([[ $CONTAINER_OPTIONS == $CONTAINER_COMMAND ]] && echo "" || echo $CONTAINER_OPTIONS)
+      CONTAINER_OPTIONS=$([[ $CONTAINER_OPTIONS == $CONTAINER_COMMAND ]] && echo "" || echo "$CONTAINER_OPTIONS")
       break
       ;;
   esac
