@@ -1,3 +1,10 @@
+# [1.0.0-beta.12](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.11...1.0.0-beta.12) (2024-06-03)
+
+
+### Bug Fixes
+
+* **esi-shell:** avoid passing options to echo ([e009ef9](https://github.com/BNLNPPS/esi-shell/commit/e009ef9fa085e1590d8f41714fbb05ac152796b7))
+
 # [1.0.0-beta.11](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.10...1.0.0-beta.11) (2024-05-31)
 
 
