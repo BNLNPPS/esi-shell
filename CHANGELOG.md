@@ -1,3 +1,10 @@
+# [1.0.0-beta.13](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.12...1.0.0-beta.13) (2024-06-07)
+
+
+### Bug Fixes
+
+* **env:** define environment variable TMP expected by opticks tests ([#85](https://github.com/BNLNPPS/esi-shell/issues/85)) ([06780ab](https://github.com/BNLNPPS/esi-shell/commit/06780ab745b8a0d931910d203bff185ca4a230b7))
+
 # [1.0.0-beta.12](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.11...1.0.0-beta.12) (2024-06-03)
 
 
