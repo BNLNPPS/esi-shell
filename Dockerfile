@@ -7,6 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Install Spack package manager
 RUN apt update \
  && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip \
+    libglm-dev libglfw3-dev libimgui-dev libglew-dev libglu1-mesa-dev \
     libssl-dev python-is-python3 \
     cuda-nvcc-11-8 libcurand-dev-11-8 \
     libxinerama-dev libxcursor-dev libxi-dev \
