@@ -1,78 +1,95 @@
+## esi-shell
+
+The goal of this project is to provide a stable containerized environment for reproducible
+simulation jobs levereging on the Geant4 and NVIDIA OptiX ray tracing capabilities.
+
 ### Prerequisites
 
-Before starting, make sure you have the following prerequisites installed:
+Before starting, make sure you have the following prerequisites available and installed:
 
-* NVIDIA GPU supported by OptiX
-* NVIDIA OptiX ([download](https://developer.nvidia.com/designworks/optix/download))
+* A CUDA-capable NVIDIA GPU
+* [Docker Engine](https://docs.docker.com/engine/install/)
 * NVIDIA container toolkit ([installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html))
 
-### esi-shell
 
-Ensure that the environment variable `OPTIX_DIR` is configured to point to the directory where OptiX is installed, e.g.
+### Quick start
 
-```shell
-export OPTIX_DIR=/usr/local/optix
-```
-
-Next, install and run `esi-shell`:
+The installer script for the `esi-shell` container is available directly at
+[bnlnpps.github.io/esi-shell/](https://bnlnpps.github.io/esi-shell/esi-shell). It can be downloaded
+and then made executable:
 
 ```shell
 curl -Os https://bnlnpps.github.io/esi-shell/esi-shell && chmod u+x esi-shell
+```
+
+The `esi-shell` environment can be used interactively by running the script:
+
+```shell
 ./esi-shell
 ```
 
-Once the container is up, you can build the code relying on GPU functionality and run the opticks tests:
+Once the container is up, you can execute the code relying on GPU functionality, e.g. run the
+available tests:
 
 ```shell
-opticks-full
+opticks-full-prepare
 opticks-t
 ```
 
-### Docker
+It is also possible to run any container command non-interactively:
 
-* Create a personal access token with privilege to download packages from github package registry
-<img width="992" alt="Screenshot 2024-05-07 at 9 36 36 PM" src="https://github.com/BNLNPPS/esi-shell/assets/7409132/c58477d6-80a9-4a57-855a-20f755c9a0c8">
+```shell
+./esi-shell "opticks-full-prepare && opticks-t"
+```
 
-* Login to github package registry with your token.
-  
-  ```shell
-    export TOKEN=<YOUR_TOKEN>
-    echo $TOKEN | docker login ghcr.io -u USERNAME --password-stdin
-  ```
-* Pull the tagged release you want to run from the registry. For example:
-  
-  ```shell
-   docker pull ghcr.io/bnlnpps/esi-shell:latest
-  ```
-  The list of all tagged releases can be found [here](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell).
-  
-* Run the tagged release with the local nvidia optix installation
+Use the `-h/--help` option to get a quick summary of available options and to learn how to pass
+arguments to the underlying container, e.g.:
 
-  ```shell
-    docker run --rm -it --gpus all -v /usr/local/optix:/usr/local/optix -e HOME=/esi-shell ghcr.io/bnlnpps/esi-shell:latest
-  ```
+```shell
+./esi-shell --help
+./esi-shell -- -v $HOME/out:/tmp/results
+```
 
-  Explanation of the docker command:
-  ```
-  docker run: Instructs Docker to run a container.
-  --rm: Ensures that the container is removed after it stops running.
-  -it:  Make the container interactive.
-  --gpus all: Specifies that all available GPUs should be accessible within the container.
-  -v /usr/local/optix:/usr/local/optix: Mounts the host directory /usr/local/optix into the container at the same location.
-  -e HOME=/esi-shell: Sets the environment variable HOME to /esi-shell within the container.
-  ghcr.io/bnlnpps/esi-shell:1.0.0-beta.4: Image and tag in github package registry. 
-  ```
-* Build the code and run unit tests
 
-  ```shell
-    opticks-full
-    opticks-t
-  ```
+### For developers
 
----
+If you plan to develop the code utilizing GPU capabilities, you will likely need to install [NVIDIA
+OptiX](https://developer.nvidia.com/designworks/optix/download). Place the downloaded file on the
+same path where you cloned [github.com/BNLNPPS/esi-shell](https://github.com/BNLNPPS/esi-shell):
 
-Convert gdml geometry to CSG
+```shell
+cd esi-shell
+ls
+... NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh ...
+```
+
+Now, the `esi-shell` image can be built locally
+
+```shell
+docker build -t esi-shell .
+```
+
+For local development with OptiX, install it on your host system. We recommend installing OptiX in
+`/usr/local/optix` but any other path will be as good:
 
 ```
-opticks/g4cx/tests/G4CXOpticks_setGeometry_Test.sh
+export OPTIX_DIR=$HOME/optix
+mkdir -p $OPTIX_DIR
+./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --prefix=$OPTIX_DIR
+```
+
+When running `esi-shell`, make sure that the environment variable `OPTIX_DIR` is configured to point
+to the directory where OptiX is installed. If not set, the default path `OPTIX_DIR=/usr/local/optix`
+will be mounted insdie the container at runtime.
+
+
+#### Docker
+
+If preferred, you can pull a tagged release from the registry and work with the images directly. The
+list of all tagged releases can be found
+[here](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell). Run the tagged image with
+the local NVIDIA OptiX installation, e.g.:
+
+```shell
+docker run --rm -it --gpus all -v /usr/local/optix:$OPTIX_DIR ghcr.io/bnlnpps/esi-shell:<tag>
 ```
