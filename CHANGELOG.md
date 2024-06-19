@@ -1,3 +1,10 @@
+# [1.0.0-beta.14](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.13...1.0.0-beta.14) (2024-06-19)
+
+
+### Bug Fixes
+
+* install cmake directly ([#88](https://github.com/BNLNPPS/esi-shell/issues/88)) ([e264829](https://github.com/BNLNPPS/esi-shell/commit/e264829a56638035fd0c51479fbfcd65d251a3f6)), closes [#87](https://github.com/BNLNPPS/esi-shell/issues/87)
+
 # [1.0.0-beta.13](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.12...1.0.0-beta.13) (2024-06-07)
 
 
