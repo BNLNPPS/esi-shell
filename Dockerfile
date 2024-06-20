@@ -15,14 +15,10 @@ RUN apt update \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN <<EOF
-    curl -sLO https://github.com/Kitware/CMake/releases/download/v3.29.6/cmake-3.29.6-linux-x86_64.sh
-    chmod u+x cmake-3.29.6-linux-x86_64.sh
-    ./cmake-3.29.6-linux-x86_64.sh --skip-license --prefix=/usr/local
-EOF
-
 RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 
+RUN sed -i 's/    granularity: microarchitectures/    granularity: generic/g' /opt/spack/etc/spack/defaults/concretizer.yaml
+RUN sed -i '/  all:/a\    target: [x86_64_v3]'  /opt/spack/etc/spack/defaults/packages.yaml
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 SHELL ["/bin/bash", "-l", "-c"]
@@ -30,6 +26,7 @@ SHELL ["/bin/bash", "-l", "-c"]
 RUN <<EOF
     spack install geant4
     spack install boost+system+program_options+regex+filesystem
+    spack install cmake
     spack install nlohmann-json
     spack uninstall -f -y g4ndl
     spack clean -a
@@ -53,13 +50,13 @@ COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
 EOF
 
 RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
-RUN sed -i 's/       autoload: direct/\       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
+RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
 
 RUN spack module tcl refresh -y
-RUN cp -r /opt/spack/share/spack/modules/$(spack arch) /opt/modules
+RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4 xerces-c clhep boost nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
-RUN rm -fr /opt/spack/share/spack/modules/$(spack arch)
+RUN spack module tcl loads geant4 xerces-c clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
+RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
 ENV ESI_DIR=/esi
 ENV HOME=$ESI_DIR
