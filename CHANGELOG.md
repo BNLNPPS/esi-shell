@@ -1,3 +1,10 @@
+# [1.0.0-beta.15](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.14...1.0.0-beta.15) (2024-06-20)
+
+
+### Bug Fixes
+
+* **build:** compile for generic x86_64 (v3) microarchitecture ([#90](https://github.com/BNLNPPS/esi-shell/issues/90)) ([6a4a045](https://github.com/BNLNPPS/esi-shell/commit/6a4a045a530136c877a9bf7966b3878b1478a01a))
+
 # [1.0.0-beta.14](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.13...1.0.0-beta.14) (2024-06-19)
 
 
