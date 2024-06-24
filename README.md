@@ -93,3 +93,24 @@ the local NVIDIA OptiX installation, e.g.:
 ```shell
 docker run --rm -it --gpus all -v /usr/local/optix:$OPTIX_DIR ghcr.io/bnlnpps/esi-shell:<tag>
 ```
+
+
+### Opticks
+
+One can get familiar with Opticks by running provided tests and examining the produced output. For
+example, in the properly setup environment do:
+
+```shell
+opticks/g4cx/tests/G4CXTest_raindrop.sh
+python -i opticks/g4cx/tests/G4CXOpticks_setGeometry_Test.py
+```
+
+```python
+import plotly.graph_objects as go
+
+tri = cf.sim.stree.mesh.G4_WATER_solid.tri
+vtx = cf.sim.stree.mesh.G4_WATER_solid.vtx
+m=go.Mesh3d(x=vtx.T[0], y=vtx.T[1], z=vtx.T[2], i=tri.T[0], j=tri.T[1], k=tri.T[2], color='green', opacity=0.2)
+fig = go.Figure(data=[m])
+fig.show()
+```
