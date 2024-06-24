@@ -11,6 +11,7 @@ python = "^3.10"
 ipython = "^8.24.0"
 numpy = "^1.26.4"
 pyvista = "^0.43.8"
+plotly = "^5.22.0"
 
 [build-system]
 requires = ["poetry-core"]
