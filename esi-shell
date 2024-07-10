@@ -27,8 +27,7 @@ REQUIRED_DOCKER_VERSION=23.0.0
 
 # set default values
 IMAGE_NAME="ghcr.io/bnlnpps/esi-shell"
-IMAGE_TAG_DEFAULT="latest"
-IMAGE_TAG=$IMAGE_TAG_DEFAULT
+IMAGE_TAG="latest"
 ESI_SHELL_VERSION=
 CONTAINER_COMMAND=
 CONTAINER_OPTIONS=
@@ -41,7 +40,7 @@ usage() {
   echo ""
   echo "OPTIONS:"
   echo "  -h, --help       Print this message"
-  echo "  -t, --tag        Specific esi-shell tag to use (Default: $IMAGE_TAG_DEFAULT)"
+  echo "  -t, --tag        Specific esi-shell tag to use (Default: $IMAGE_TAG)"
   echo ""
   echo "COMMAND is a command to execute in the container, leave it empty for interactive shell. For example:"
   echo "  pwd"
@@ -104,7 +103,7 @@ while [[ $# -gt 0 ]]
 do
   case $1 in
     -t | --tag)
-      IMAGE_TAG=${2:-$IMAGE_TAG_DEFAULT}
+      IMAGE_TAG=${2:-$IMAGE_TAG}
       shift
       shift
       ;;
