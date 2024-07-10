@@ -27,8 +27,8 @@ REQUIRED_DOCKER_VERSION=23.0.0
 
 # set default values
 IMAGE_NAME="ghcr.io/bnlnpps/esi-shell"
-DEFAULT_VERSION="latest"
-VERSION=$DEFAULT_VERSION
+IMAGE_TAG_DEFAULT="latest"
+IMAGE_TAG=$IMAGE_TAG_DEFAULT
 ESI_SHELL_VERSION=
 CONTAINER_COMMAND=
 CONTAINER_OPTIONS=
@@ -40,7 +40,7 @@ usage() {
   echo "  ./esi-shell [OPTIONS] [COMMAND] [-- CONTAINER_OPTIONS]"
   echo ""
   echo "OPTIONS:"
-  echo "  -v, --version    Specific esi-shell version to use (Default: $DEFAULT_VERSION)"
+  echo "  -t, --tag        Specific esi-shell tag to use (Default: $IMAGE_TAG_DEFAULT)"
   echo "  -h, --help       Print this message"
   echo ""
   echo "COMMAND is a command to execute in the container, leave it empty for interactive shell. For example:"
@@ -55,7 +55,7 @@ usage() {
   echo ""
   echo "EXAMPLES:"
   echo "  - Start an interactive shell: ./esi-shell" 
-  echo "  - Use specific version:       ./esi-shell -v 0.1.0"
+  echo "  - Use specific tag:           ./esi-shell -t 0.1.0"
   echo "  - Execute a single command:   ./esi-shell echo \$OPTIX_DIR"
   echo "  - Configure remote image:     ./esi-shell -- --pull=always -e HOME=\$HOME"
   echo ""
@@ -103,8 +103,8 @@ warn() {
 while [[ $# -gt 0 ]]
 do
   case $1 in
-    -v | --version)
-      VERSION=${2:-$DEFAULT_VERSION}
+    -t | --tag)
+      IMAGE_TAG=${2:-$IMAGE_TAG_DEFAULT}
       shift
       shift
       ;;
@@ -279,7 +279,7 @@ fi
 USABLE_SINGULARITY="$(find_tool singularity)"
 USABLE_DOCKER="$(find_tool docker)"
 
-IMG=${IMAGE_NAME}:${VERSION}
+IMG=${IMAGE_NAME}:${IMAGE_TAG}
 ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
