@@ -56,4 +56,4 @@ jobs:
 
       - name: Test esi-shell
         run: |
-          ./esi-shell -v ${{ env.TAG }} "opticks-full-prepare && opticks-t"
+          ./esi-shell -t ${{ env.TAG }} "opticks-full-prepare && opticks-t"
