@@ -1,3 +1,10 @@
+# [1.0.0-beta.16](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.15...1.0.0-beta.16) (2024-07-10)
+
+
+### Bug Fixes
+
+* rename esi-shell option --version to --tag ([#99](https://github.com/BNLNPPS/esi-shell/issues/99)) ([70623b9](https://github.com/BNLNPPS/esi-shell/commit/70623b9610f6bc772d2df460a4646dc6ea7b36cb))
+
 # [1.0.0-beta.15](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.14...1.0.0-beta.15) (2024-06-20)
 
 
