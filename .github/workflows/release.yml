@@ -19,6 +19,13 @@ jobs:
         with:
           fetch-depth: 0  # Important for Semantic Release to analyze all commits
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+
+      - run: npm install semantic-release-replace-plugin -D
+
       - name: Copy external assets
         run: cp /home/runner/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 

@@ -9,6 +9,12 @@ branches:
 tagFormat: '${version}' # without this, the tag is prefixed with a 'v'
 plugins:
   - "@semantic-release/commit-analyzer"
+  - path: "semantic-release-replace-plugin"
+    replacements:
+      - files:
+          - esi-shell
+        from: ESI_SHELL_VERSION=.*
+        to: ESI_SHELL_VERSION=${nextRelease.version}
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/changelog"
   - path: "@semantic-release/npm"
@@ -17,4 +23,5 @@ plugins:
     assets:
       - "CHANGELOG.md"
       - "package.json"
+      - "esi-shell"
     message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"

@@ -41,6 +41,7 @@ usage() {
   echo "OPTIONS:"
   echo "  -h, --help       Print this message"
   echo "  -t, --tag        Specific esi-shell tag to use (Default: $IMAGE_TAG)"
+  echo "      --version    Print esi-shell version"
   echo ""
   echo "COMMAND is a command to execute in the container, leave it empty for interactive shell. For example:"
   echo "  pwd"
@@ -109,6 +110,10 @@ do
       ;;
     -h | --help)
       usage 0
+      ;;
+    --version)
+      echo "${ESI_SHELL_VERSION-}"
+      exit 0
       ;;
     --)
       shift
