@@ -1,3 +1,10 @@
+# [1.0.0-beta.18](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.17...1.0.0-beta.18) (2024-07-12)
+
+
+### Bug Fixes
+
+* update opticks ([#102](https://github.com/BNLNPPS/esi-shell/issues/102)) ([3277f6f](https://github.com/BNLNPPS/esi-shell/commit/3277f6f769aec5644e8dd48f7f4020b9da1d02fa))
+
 # [1.0.0-beta.17](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.16...1.0.0-beta.17) (2024-07-12)
 
 
