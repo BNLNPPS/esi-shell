@@ -102,8 +102,7 @@ jobs:
 
       - name: Update esi-shell version
         run: |
-          SEMVER=$(grep -Po '"version": "\K[^"]*' package.json)
-          sed -i "s/ESI_SHELL_VERSION=.*/ESI_SHELL_VERSION=${SEMVER}-$(git rev-parse --short HEAD)/g" esi-shell
+          sed -i "/^ESI_SHELL_VERSION=/ s/$/-$(git rev-parse --short HEAD)/" esi-shell
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
