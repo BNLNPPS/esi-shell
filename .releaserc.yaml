@@ -17,11 +17,8 @@ plugins:
         to: ESI_SHELL_VERSION=${nextRelease.version}
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/changelog"
-  - path: "@semantic-release/npm"
-    npmPublish: false
   - path: "@semantic-release/git"
     assets:
       - "CHANGELOG.md"
-      - "package.json"
       - "esi-shell"
     message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
