@@ -1,3 +1,10 @@
+# [1.0.0-beta.17](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.16...1.0.0-beta.17) (2024-07-12)
+
+
+### Bug Fixes
+
+* add option to print esi-shell version ([#100](https://github.com/BNLNPPS/esi-shell/issues/100)) ([9c15c86](https://github.com/BNLNPPS/esi-shell/commit/9c15c866ad8a540e32a41345f100a4d1a69b5f9d))
+
 # [1.0.0-beta.16](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.15...1.0.0-beta.16) (2024-07-10)
 
 
