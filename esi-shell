@@ -56,7 +56,7 @@ usage() {
   echo "EXAMPLES:"
   echo "  - Start an interactive shell: ./esi-shell" 
   echo "  - Use specific tag:           ./esi-shell -t 0.1.0"
-  echo "  - Execute a single command:   ./esi-shell echo \$OPTIX_DIR"
+  echo "  - Execute a single command:   ./esi-shell 'echo \$OPTIX_DIR'"
   echo "  - Configure remote image:     ./esi-shell -- --pull=always -e HOME=\$HOME"
   echo ""
   exit "${1:-0}"
