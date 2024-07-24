@@ -1,3 +1,10 @@
+# [1.0.0-beta.19](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.18...1.0.0-beta.19) (2024-07-24)
+
+
+### Bug Fixes
+
+* **esi-shell:** correct example command ([#105](https://github.com/BNLNPPS/esi-shell/issues/105)) ([34861bb](https://github.com/BNLNPPS/esi-shell/commit/34861bbce3efc89414d8bdf8a4eba779937a33f4))
+
 # [1.0.0-beta.18](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.17...1.0.0-beta.18) (2024-07-12)
 
 
