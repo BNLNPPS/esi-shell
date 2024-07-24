@@ -15,10 +15,15 @@ plugins:
           - esi-shell
         from: ESI_SHELL_VERSION=.*
         to: ESI_SHELL_VERSION=${nextRelease.version}
+      - files:
+          - pyproject.toml
+        from: version = ".*"
+        to: version = "${nextRelease.version}"
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/changelog"
   - path: "@semantic-release/git"
     assets:
       - "CHANGELOG.md"
       - "esi-shell"
+      - "pyproject.toml"
     message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
