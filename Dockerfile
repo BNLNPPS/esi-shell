@@ -37,8 +37,16 @@ EOF
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
 
-RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g'  /opt/nvidia/nvidia_entrypoint.sh \
- && sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-l" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
+RUN cat <<"EOF" >> /etc/bash.bashrc
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+EOF
 
 COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
     include:
