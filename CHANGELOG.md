@@ -1,3 +1,10 @@
+# [1.0.0-beta.20](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.19...1.0.0-beta.20) (2024-07-25)
+
+
+### Bug Fixes
+
+* update release version in pyproject.toml ([893f139](https://github.com/BNLNPPS/esi-shell/commit/893f139fd5dcab4dae7be7585d50b96567c33445))
+
 # [1.0.0-beta.19](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.18...1.0.0-beta.19) (2024-07-24)
 
 
