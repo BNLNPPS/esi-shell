@@ -37,8 +37,7 @@ EOF
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
 
-RUN sed -i 's/  exec "\/bin\/bash"/  exec "\/bin\/bash" "-l"/g'  /opt/nvidia/nvidia_entrypoint.sh \
- && sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-l" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
+RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
 COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
     include:
@@ -58,6 +57,21 @@ RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_mod
 RUN spack module tcl loads geant4 xerces-c clhep boost cmake nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
+# Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
+RUN cat <<"EOF" > /etc/bash.nonint
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+EOF
+
+RUN cat /etc/bash.nonint >> /etc/bash.bashrc
+
+ENV BASH_ENV=/etc/bash.nonint
 ENV ESI_DIR=/esi
 ENV HOME=$ESI_DIR
 ENV OPTIX_DIR=/usr/local/optix
