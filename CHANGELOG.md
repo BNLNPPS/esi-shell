@@ -1,3 +1,10 @@
+# [1.0.0-beta.21](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.20...1.0.0-beta.21) (2024-07-26)
+
+
+### Bug Fixes
+
+* **esi-shell:** source profile scripts in non-login non-interactive shells ([#107](https://github.com/BNLNPPS/esi-shell/issues/107)) ([cc6f775](https://github.com/BNLNPPS/esi-shell/commit/cc6f7759cf99a194995b09bec2862eb46613f01b))
+
 # [1.0.0-beta.20](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.19...1.0.0-beta.20) (2024-07-25)
 
 
