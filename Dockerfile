@@ -93,7 +93,7 @@ ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
 ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=89
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
-ENV PATH=${OPTICKS_PREFIX}/lib:${PATH}
+ENV PATH=${OPTICKS_PREFIX}/bin:${OPTICKS_PREFIX}/lib:${PATH}
 ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
 ENV VIRTUAL_ENV_DISABLE_PROMPT=1
 ENV TMP=/tmp
@@ -117,5 +117,38 @@ COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
 EOF
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN opticks-full
+
+RUN cmake -S opticks/okconf -B $OPTICKS_PREFIX/build/okconf -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/okconf --parallel $(nproc) --target install
+
+RUN cmake -S opticks/sysrap -B $OPTICKS_PREFIX/build/sysrap -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/sysrap --parallel $(nproc) --target install
+
+RUN cmake -S opticks/ana -B $OPTICKS_PREFIX/build/ana -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/ana --parallel $(nproc) --target install
+
+RUN cmake -S opticks/analytic -B $OPTICKS_PREFIX/build/analytic -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/analytic --parallel $(nproc) --target install
+
+RUN cmake -S opticks/bin -B $OPTICKS_PREFIX/build/bin -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/bin --parallel $(nproc) --target install
+
+RUN cmake -S opticks/CSG -B $OPTICKS_PREFIX/build/CSG -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/CSG --parallel $(nproc) --target install
+
+RUN cmake -S opticks/qudarap -B $OPTICKS_PREFIX/build/qudarap -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/qudarap --parallel $(nproc) --target install
+
+RUN cmake -S opticks/CSGOptiX -B $OPTICKS_PREFIX/build/CSGOptiX -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
+ && cmake --build $OPTICKS_PREFIX/build/CSGOptiX --parallel $(nproc) --target install
+
+RUN cmake -S opticks/gdxml -B $OPTICKS_PREFIX/build/gdxml -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/gdxml --parallel $(nproc) --target install
+
+RUN cmake -S opticks/u4 -B $OPTICKS_PREFIX/build/u4 -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/u4 --parallel $(nproc) --target install
+
+RUN cmake -S opticks/g4cx -B $OPTICKS_PREFIX/build/g4cx -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
+ && cmake --build $OPTICKS_PREFIX/build/g4cx --parallel $(nproc) --target install
+
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
