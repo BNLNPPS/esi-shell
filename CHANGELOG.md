@@ -1,3 +1,15 @@
+# [1.0.0-beta.22](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.21...1.0.0-beta.22) (2024-08-02)
+
+
+### Bug Fixes
+
+* **env:** help CMake find installed opticks ([3a4a531](https://github.com/BNLNPPS/esi-shell/commit/3a4a5317eb3b25b49147a3ea2fc92b571f88a5ef))
+
+
+### Features
+
+* install opticks dependencies directly or via Spack ([43748e1](https://github.com/BNLNPPS/esi-shell/commit/43748e19f56d4bf77ecae71a0502b7fde97f6353))
+
 # [1.0.0-beta.21](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.20...1.0.0-beta.21) (2024-07-26)
 
 
