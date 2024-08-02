@@ -1,3 +1,10 @@
+# [1.0.0-beta.24](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.23...1.0.0-beta.24) (2024-08-02)
+
+
+### Reverts
+
+* Revert "build: push pull request images to ghcr.io" ([9c43430](https://github.com/BNLNPPS/esi-shell/commit/9c4343082da1a4da604930b621aaf27886cb1194))
+
 # [1.0.0-beta.23](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.22...1.0.0-beta.23) (2024-08-02)
 
 
