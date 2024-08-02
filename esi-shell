@@ -266,9 +266,7 @@ do
   if [[ ${DOCKER_BIND_VOLUME-} =~ $(basename $dir) ]]; then
     continue
   fi
-  if [ -d $dir ]; then
-    DOCKER_BIND_VOLUME="${DOCKER_BIND_VOLUME-} -v $dir:$dir"
-  fi
+  DOCKER_BIND_VOLUME="${DOCKER_BIND_VOLUME-} -v $dir:$dir"
 done
 
 #if [ `uname -m` = "arm64" ]; then
