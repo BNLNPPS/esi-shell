@@ -1,3 +1,10 @@
+# [1.0.0-beta.23](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.22...1.0.0-beta.23) (2024-08-02)
+
+
+### Bug Fixes
+
+* allow to bind dirs on remote host ([#111](https://github.com/BNLNPPS/esi-shell/issues/111)) ([1d52510](https://github.com/BNLNPPS/esi-shell/commit/1d525100d26849509d3d8ec34c9866dff1287a6b))
+
 # [1.0.0-beta.22](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.21...1.0.0-beta.22) (2024-08-02)
 
 
