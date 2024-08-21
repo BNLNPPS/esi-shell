@@ -99,6 +99,13 @@ ENV VIRTUAL_ENV_DISABLE_PROMPT=1
 ENV TMP=/tmp
 ENV CMAKE_PREFIX_PATH=${OPTICKS_PREFIX}
 
+RUN mkdir -p /opt/pypoetry
+
+ENV POETRY_CONFIG_DIR=/opt/pypoetry/config
+ENV POETRY_VIRTUALENVS_PATH=/opt/pypoetry/venv
+ENV POETRY_DATA_DIR=/opt/pypoetry/share
+ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
+
 WORKDIR $ESI_DIR
 
 COPY .opticks .opticks
@@ -110,12 +117,12 @@ COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 COPY pyproject.toml .
 
 RUN poetry install
+RUN chmod -R 777 /opt/pypoetry
 
-COPY <<-"EOF" /etc/profile.d/z20_opticks.sh
-    source $(poetry env info --path)/bin/activate
-    source $OPTICKS_HOME/opticks.bash
-    opticks-
-EOF
+RUN echo -e "\
+source $(poetry env info --path)/bin/activate \n\
+source $OPTICKS_HOME/opticks.bash \n\
+opticks-" >> /etc/profile.d/z20_opticks.sh
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 
