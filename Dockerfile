@@ -159,4 +159,7 @@ RUN cmake -S opticks/u4 -B $OPTICKS_PREFIX/build/u4 -DCMAKE_MODULE_PATH=$OPTICKS
 RUN cmake -S opticks/g4cx -B $OPTICKS_PREFIX/build/g4cx -DCMAKE_MODULE_PATH=$OPTICKS_HOME/cmake/Modules -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX \
  && cmake --build $OPTICKS_PREFIX/build/g4cx --parallel $(nproc) --target install
 
+# Allow non-root users rebuild Opticks in interactive shell
+RUN chmod -R 777 ${OPTICKS_PREFIX}
+
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
