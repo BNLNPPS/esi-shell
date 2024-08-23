@@ -1,3 +1,10 @@
+# [1.0.0-beta.25](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.24...1.0.0-beta.25) (2024-08-23)
+
+
+### Bug Fixes
+
+* make virtual env available to all users ([#114](https://github.com/BNLNPPS/esi-shell/issues/114)) ([f15579d](https://github.com/BNLNPPS/esi-shell/commit/f15579d3a9eaa2fcb970af37d54265ac4e5afd3b)), closes [#113](https://github.com/BNLNPPS/esi-shell/issues/113)
+
 # [1.0.0-beta.24](https://github.com/BNLNPPS/esi-shell/compare/1.0.0-beta.23...1.0.0-beta.24) (2024-08-02)
 
 
