@@ -83,15 +83,44 @@ to the directory where OptiX is installed. If not set, the default path `OPTIX_D
 will be mounted insdie the container at runtime.
 
 
-#### Docker
+#### Using `esi-shell` Docker Images
 
-If preferred, you can pull a tagged release from the registry and work with the images directly. The
-list of all tagged releases can be found
-[here](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell). Run the tagged image with
-the local NVIDIA OptiX installation, e.g.:
+The `esi-shell` script streamlines the process of setting up a GPU-enabled Geant4 simulation environment, but you can
+also directly work with the [`esi-shell` Docker images](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell)
+if preferred. These images can be pulled from the registry and used independently of the script.
+
+To run a tagged image with your local NVIDIA OptiX installation, use the following command:
 
 ```shell
 docker run --rm -it --gpus all -v /usr/local/optix:$OPTIX_DIR ghcr.io/bnlnpps/esi-shell:<tag>
+```
+
+This command is equivalent to using the shorter `esi-shell` command:
+
+```shell
+esi-shell -t <tag>
+```
+
+A complete list of available tagged releases can be found [here](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell).
+
+To run the container on a remote host (`HOST`), set the `DOCKER_HOST` environment variable. For example, if you have SSH
+access to a GPU-capable host, prepend your `docker` or `esi-shell` commands with `DOCKER_HOST`:
+
+```shell
+DOCKER_HOST=ssh://HOST docker run ghcr.io/bnlnpps/esi-shell
+DOCKER_HOST=ssh://HOST esi-shell
+```
+
+To enable X11 forwarding, pass your local `DISPLAY` and `HOME` environment variables to the container:
+
+```shell
+docker run -e DISPLAY=$DISPLAY -v $HOME/.Xauthority:/esi/.Xauthority --net=host ghcr.io/bnlnpps/esi-shell
+```
+
+These arguments can also be passed to `esi-shell` after the `--` option divider. When running the container on a remote host, use the environment variables defined on that host:
+
+```shell
+DOCKER_HOST=ssh://HOST esi-shell -- -e DISPLAY=$(ssh HOST 'echo $DISPLAY') -v $(ssh HOST 'echo $HOME')/.Xauthority:/esi/.Xauthority --net=host
 ```
 
 
@@ -101,16 +130,20 @@ One can get familiar with Opticks by running provided tests and examining the pr
 example, in the properly setup environment do:
 
 ```shell
+opticks-full-prepare
 opticks/g4cx/tests/G4CXTest_raindrop.sh
 python -i opticks/g4cx/tests/G4CXOpticks_setGeometry_Test.py
 ```
 
 ```python
 import plotly.graph_objects as go
+from opticks.CSG.CSGFoundry import CSGFoundry
+
+cf = CSGFoundry.Load("/path/to/csg_tree")
 
 tri = cf.sim.stree.mesh.G4_WATER_solid.tri
 vtx = cf.sim.stree.mesh.G4_WATER_solid.vtx
-m=go.Mesh3d(x=vtx.T[0], y=vtx.T[1], z=vtx.T[2], i=tri.T[0], j=tri.T[1], k=tri.T[2], color='green', opacity=0.2)
+m = go.Mesh3d(x=vtx.T[0], y=vtx.T[1], z=vtx.T[2], i=tri.T[0], j=tri.T[1], k=tri.T[2], color='green', opacity=0.2)
 fig = go.Figure(data=[m])
 fig.show()
 ```
