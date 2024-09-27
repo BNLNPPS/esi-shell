@@ -1,4 +1,4 @@
 #!/bin/bash 
 # THIS SCRIPT DOES ONE THING ONLY : IT EXPORTS GEOM
-geom=pfRICH
+geom=RaindropRockAirWater
 export GEOM=$geom  

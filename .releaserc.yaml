@@ -1,0 +1,29 @@
+# See https://semantic-release.gitbook.io/semantic-release/usage/configuration
+branches:
+  - '+([0-9])?(.{+([0-9]),x}).x'
+  - 'main'
+  - name: 'beta'
+    prerelease: true
+  - name: 'betatest'
+    prerelease: true
+tagFormat: '${version}' # without this, the tag is prefixed with a 'v'
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - path: "semantic-release-replace-plugin"
+    replacements:
+      - files:
+          - esi-shell
+        from: ESI_SHELL_VERSION=.*
+        to: ESI_SHELL_VERSION=${nextRelease.version}
+      - files:
+          - pyproject.toml
+        from: version = ".*"
+        to: version = "${nextRelease.version}"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/changelog"
+  - path: "@semantic-release/git"
+    assets:
+      - "CHANGELOG.md"
+      - "esi-shell"
+      - "pyproject.toml"
+    message: "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"

@@ -26,24 +26,38 @@ REQUIRED_SINGULARITY_VERSION=3.7.4
 REQUIRED_DOCKER_VERSION=23.0.0
 
 # set default values
-IMAGE_NAME="bnlnpps/esi-opticks"
-DEFAULT_VERSION="latest"
-VERSION=$DEFAULT_VERSION
+IMAGE_NAME="ghcr.io/bnlnpps/esi-shell"
+IMAGE_TAG="latest"
+ESI_SHELL_VERSION=1.0.0-beta.25
+CONTAINER_COMMAND=
+CONTAINER_OPTIONS=
 
 usage() {
   echo "Start esi-shell, the ESI containerized software environment."
   echo ""
   echo "USAGE:"
-  echo "  ./esi-shell [OPTIONS] [ -- COMMAND ]"
+  echo "  ./esi-shell [OPTIONS] [COMMAND] [-- CONTAINER_OPTIONS]"
   echo ""
-  echo "OPTIONAL ARGUMENTS:"
-  echo "  -v, --version    Version to install (Default: $DEFAULT_VERSION)"
+  echo "OPTIONS:"
   echo "  -h, --help       Print this message"
+  echo "  -t, --tag        Specific esi-shell tag to use (Default: $IMAGE_TAG)"
+  echo "      --version    Print esi-shell version"
+  echo ""
+  echo "COMMAND is a command to execute in the container, leave it empty for interactive shell. For example:"
+  echo "  pwd"
+  echo "  ls -la"
+  echo "  echo '\$HOME'"
+  echo "  tests/test_opticks.sh"
+  echo ""
+  echo "CONTAINER_OPTIONS will be passed to the underlying container command. For example:"
+  echo "  -- --volume \$PWD/mytests:/tmp/mytests"
+  echo "  -- -v \$HOME/optix:/usr/local/optix -e OPTICKS_OPTIX_PREFIX=/usr/local/optix"
   echo ""
   echo "EXAMPLES:"
   echo "  - Start an interactive shell: ./esi-shell" 
-  echo "  - Use different version:      ./esi-shell -v 0.1.0"
-  echo "  - Execute a single command:   ./esi-shell -- <COMMAND>"
+  echo "  - Use specific tag:           ./esi-shell -t 0.1.0"
+  echo "  - Execute a single command:   ./esi-shell 'echo \$OPTIX_DIR'"
+  echo "  - Configure remote image:     ./esi-shell -- --pull=always -e HOME=\$HOME"
   echo ""
   exit "${1:-0}"
 }
@@ -86,24 +100,37 @@ warn() {
 }
 
 
-while [ $# -gt 0 ]
+while [[ $# -gt 0 ]]
 do
   case $1 in
-    -v | --version)
-      VERSION=${2:-$DEFAULT_VERSION}
+    -t | --tag)
+      IMAGE_TAG=${2:-$IMAGE_TAG}
       shift
       shift
       ;;
     -h | --help)
-      usage
+      usage 0
+      ;;
+    --version)
+      echo "${ESI_SHELL_VERSION-}"
+      exit 0
       ;;
     --)
       shift
+      CONTAINER_OPTIONS="$@"
+      break
+      ;;
+    -*)
+      warn "Unrecognized option: '$1'"
+      usage 1
       break
       ;;
     *)
-      warn "Unrecognized option: '$1'"
-      usage 1
+      _ALL_OTHER_ARGS="$@"
+      CONTAINER_COMMAND=${_ALL_OTHER_ARGS%% -- *}
+      CONTAINER_OPTIONS=${_ALL_OTHER_ARGS#* -- }
+      CONTAINER_OPTIONS=$([[ $CONTAINER_OPTIONS == $CONTAINER_COMMAND ]] && echo "" || echo "$CONTAINER_OPTIONS")
+      break
       ;;
   esac
 done
@@ -195,8 +222,7 @@ find_tool() {
 }
 
 # Call with a prompt string or use a default
-confirm()
-{
+confirm() {
   read -r -p "${1:-Are you sure? [y/n]} " response
   if [[ "${response:=$2}" =~ ^([yY][eE][sS]|[yY])+$ ]]
   then
@@ -240,46 +266,28 @@ do
   if [[ ${DOCKER_BIND_VOLUME-} =~ $(basename $dir) ]]; then
     continue
   fi
-  if [ -d $dir ]; then
-    DOCKER_BIND_VOLUME="${DOCKER_BIND_VOLUME-} -v $dir:$dir"
-  fi
+  DOCKER_BIND_VOLUME="${DOCKER_BIND_VOLUME-} -v $dir:$dir"
 done
 
 #if [ `uname -m` = "arm64" ]; then
 #  DOCKER_PLATFORM="--platform linux/amd64"
 #fi
 
+if [[ -z ${CONTAINER_COMMAND-} ]]
+then
+  CONTAINER_OPTIONS+=" -i -t"
+fi
+
 USABLE_SINGULARITY="$(find_tool singularity)"
 USABLE_DOCKER="$(find_tool docker)"
 
-IMG=${IMAGE_NAME}:${VERSION}
+IMG=${IMAGE_NAME}:${IMAGE_TAG}
 ohai "Using esi-shell image: ${IMG}"
 
 if [[ -n "${USABLE_DOCKER-}" ]]
 then
-  cmd="docker run --rm -dit ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=$OPTIX_DIR -e HOME=$WORKDIR -w=$WORKDIR $IMG"
-  CONTAINER_ID=$(exec $cmd)
-
-  if [ $? -ne 0 ]
-  then
-    abort "Failed to start esi-shell"
-  fi
-
-  CONTAINER_ID=$(echo $CONTAINER_ID | cut -c -12)
-  ohai "Running docker container $CONTAINER_ID"
-
-  ohai "Setting up opticks environment. Please wait..."
-  if [[ -d $WORKDIR/.opticks ]]
-  then
-    ohai "Found existing $WORKDIR/.opticks. Will use it"
-  else
-    ohai "Creating new $WORKDIR/.opticks required by opticks"
-    docker exec -it $CONTAINER_ID sh -c 'cp -r $ESI_DIR/.opticks $HOME/'
-  fi
-
-  docker exec -it $CONTAINER_ID /opt/nvidia/nvidia_entrypoint.sh
-  confirm "Stop and remove container? [Y/n]" yes && docker rm -f $CONTAINER_ID || ohai "Remove container manually: docker rm -f $CONTAINER_ID"
-
+  cmd="docker run --rm ${DOCKER_GPU-} ${DOCKER_PLATFORM-} ${DOCKER_BIND_VOLUME-} -e OPTICKS_OPTIX_PREFIX=${OPTIX_DIR} ${CONTAINER_OPTIONS} ${IMG} ${CONTAINER_COMMAND}"
+  exec $cmd
 else
   abort "Docker client (>= $REQUIRED_DOCKER_VERSION) must be installed to proceed."
 fi
