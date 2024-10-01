@@ -163,3 +163,5 @@ RUN cmake -S opticks/g4cx -B $OPTICKS_PREFIX/build/g4cx -DCMAKE_MODULE_PATH=$OPT
 RUN chmod -R 777 ${OPTICKS_PREFIX}
 
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+RUN ln -sf bash /bin/sh
