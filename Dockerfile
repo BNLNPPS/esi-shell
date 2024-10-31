@@ -109,7 +109,6 @@ ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
 WORKDIR $ESI_DIR
 
 COPY .opticks .opticks
-COPY epic epic
 COPY tests tests
 COPY README.md .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
