@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/BNLNPPS/esi-shell/compare/1.0.0...1.0.1) (2024-10-31)
+
+
+### Bug Fixes
+
+* remove opticks submodule ([#123](https://github.com/BNLNPPS/esi-shell/issues/123)) ([2a22a69](https://github.com/BNLNPPS/esi-shell/commit/2a22a695542aea3a6af487c287c3537887545176))
+* updated esi-opticks installation method ([#122](https://github.com/BNLNPPS/esi-shell/issues/122)) ([dead6b6](https://github.com/BNLNPPS/esi-shell/commit/dead6b629942da26ec4c26b92d30b26ea594f904))
+
 # 1.0.0 (2024-09-27)
 
 
