@@ -34,14 +34,3 @@ RUN <<"EOF"
  apt install -y mesa-utils x11-apps
  apt clean
 EOF
-
-COPY nsight-compute-linux-2024.3.2.3-34861637.run .
-
-RUN <<"EOF"
- ./nsight-compute-linux-2024.3.2.3-34861637.run --quiet -- -noprompt
- ln -s /usr/local/NVIDIA-Nsight-Compute-2024.3/ncu /usr/local/bin/ncu
- ln -s /usr/local/NVIDIA-Nsight-Compute-2024.3/ncu-ui /usr/local/bin/ncu-ui
- rm -fr nsight-compute-linux-2024.3.2.3-34861637.run
-EOF
-
-RUN apt update && apt install -y gdb
