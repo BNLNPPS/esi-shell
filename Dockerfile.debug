@@ -34,3 +34,12 @@ RUN <<"EOF"
  apt install -y mesa-utils x11-apps
  apt clean
 EOF
+
+# Install esi-opticks
+COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
+
+RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
+ && cmake --build $OPTICKS_PREFIX/build --parallel --target install
+
+RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
