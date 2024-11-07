@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/BNLNPPS/esi-shell/compare/1.1.1...1.1.2) (2024-11-07)
+
+
+### Bug Fixes
+
+* bump esi-opticks revision ([#127](https://github.com/BNLNPPS/esi-shell/issues/127)) ([6ab0e43](https://github.com/BNLNPPS/esi-shell/commit/6ab0e43ff4d4d703c10d10a7e16b12cf84b45354))
+
 ## [1.1.1](https://github.com/BNLNPPS/esi-shell/compare/1.1.0...1.1.1) (2024-11-06)
 
 
