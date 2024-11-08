@@ -43,3 +43,12 @@ RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTI
  && cmake --build $OPTICKS_PREFIX/build --parallel --target install
 
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+COPY nsight-compute-linux-2024.3.2.3-34861637.run .
+
+RUN <<"EOF"
+ ./nsight-compute-linux-2024.3.2.3-34861637.run --quiet -- -noprompt
+ rm -fr nsight-compute-linux-2024.3.2.3-34861637.run
+EOF
+
+RUN apt update && apt install -y gdb
