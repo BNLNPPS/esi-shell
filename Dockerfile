@@ -133,3 +133,5 @@ RUN cmake -S opticks -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PR
 RUN chmod -R 777 ${OPTICKS_PREFIX}
 
 RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+RUN ln -sf bash /bin/sh
