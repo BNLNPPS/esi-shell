@@ -14,7 +14,7 @@ RUN apt update \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.21.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 
 RUN sed -i 's/    granularity: microarchitectures/    granularity: generic/g' /opt/spack/etc/spack/defaults/concretizer.yaml
 RUN sed -i '/  all:/a\    target: [x86_64_v3]'  /opt/spack/etc/spack/defaults/packages.yaml
@@ -60,7 +60,7 @@ RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/s
 RUN spack module tcl refresh -y
 RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4 xerces-c clhep boost cmake mesa glew glfw glm glu nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
+RUN spack module tcl loads geant4 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
 RUN mkdir -p /opt/bcm && curl -sL https://github.com/boost-cmake/bcm/archive/refs/heads/master.tar.gz | tar -xz --strip-components 1 -C /opt/bcm \
@@ -114,7 +114,7 @@ COPY README.md .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 COPY pyproject.toml .
 
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/esi-opticks/archive/3a115641.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/esi-opticks/archive/e93baba4.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 RUN poetry install
 RUN chmod -R 777 /opt/pypoetry
