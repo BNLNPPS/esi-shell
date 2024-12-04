@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/BNLNPPS/esi-shell/compare/1.1.2...1.2.0) (2024-12-04)
+
+
+### Features
+
+* bump Spack to 0.23.0 and update esi-opticks ([#128](https://github.com/BNLNPPS/esi-shell/issues/128)) ([0a871ae](https://github.com/BNLNPPS/esi-shell/commit/0a871ae8b702e2d269c85f6ca4168d99fdbf5026))
+
 ## [1.1.2](https://github.com/BNLNPPS/esi-shell/compare/1.1.1...1.1.2) (2024-11-07)
 
 
