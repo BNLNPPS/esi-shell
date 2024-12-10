@@ -4,18 +4,17 @@ FROM ghcr.io/bnlnpps/esi-shell
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN <<"EOF"
- spack install root
- spack install geant4+qt
- spack uninstall -f -y g4ndl
- spack clean -a
-EOF
+RUN spack install root \
+ && spack clean -a
+
+RUN spack install geant4+threads+motif+opengl+x11+qt ^qt \
+ && spack clean -a
 
 RUN <<"EOF"
  spack module tcl refresh -y
  rm -fr /opt/modules && cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
  echo "module use --append /opt/modules" > /etc/profile.d/z10_load_spack_modules.sh
- spack module tcl loads geant4+qt xerces-c clhep boost cmake mesa glew glfw glm glu nlohmann-json root >> /etc/profile.d/z10_load_spack_modules.sh
+ spack module tcl loads geant4+threads+motif+opengl+x11+qt xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json root >> /etc/profile.d/z10_load_spack_modules.sh
  rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 EOF
 
