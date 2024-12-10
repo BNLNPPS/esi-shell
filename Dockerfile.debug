@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN <<"EOF"
  spack install root
- spack install geant4+qt
+ spack install geant4+qt ^qt
  spack uninstall -f -y g4ndl
  spack clean -a
 EOF
