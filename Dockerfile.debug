@@ -10,6 +10,9 @@ RUN spack install root \
 RUN spack install geant4+threads+motif+opengl+x11+qt ^qt \
  && spack clean -a
 
+RUN spack install geant4~threads+motif+opengl+x11+qt ^qt \
+ && spack clean -a
+
 RUN <<"EOF"
  spack module tcl refresh -y
  rm -fr /opt/modules && cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
