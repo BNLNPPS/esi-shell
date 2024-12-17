@@ -82,6 +82,12 @@ When running `esi-shell`, make sure that the environment variable `OPTIX_DIR` is
 to the directory where OptiX is installed. If not set, the default path `OPTIX_DIR=/usr/local/optix`
 will be mounted insdie the container at runtime.
 
+One can also build an extended image with additional tools installed to assist with debugging and visualization.
+
+```shell
+docker build -t esi-shell:debug -f Dockerfile.debug .
+```
+
 
 #### Using `esi-shell` Docker Images
 
