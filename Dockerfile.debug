@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:latest
 
-FROM ghcr.io/bnlnpps/esi-shell
+FROM ghcr.io/bnlnpps/esi-shell:1.2.1
 
 ARG DEBIAN_FRONTEND=noninteractive
 
