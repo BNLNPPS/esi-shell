@@ -58,3 +58,6 @@ RUN <<"EOF"
 EOF
 
 RUN apt update && apt install -y gdb
+
+ENV OPTICKS_EVENT_MODE=DebugHeavy
+ENV GEOM=dummy
