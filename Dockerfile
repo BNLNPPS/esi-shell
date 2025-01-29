@@ -114,7 +114,7 @@ COPY README.md .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 COPY pyproject.toml .
 
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/esi-opticks/archive/83742b32.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/da5bcc87.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 RUN poetry install
 RUN chmod -R 777 /opt/pypoetry
