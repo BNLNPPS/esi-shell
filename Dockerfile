@@ -126,7 +126,7 @@ opticks-" >> /etc/profile.d/z20_opticks.sh
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 
-RUN cmake -S opticks -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Release \
+RUN cmake -S opticks -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_PREFIX/build --parallel --target install
 
 # Allow non-root users rebuild Opticks in interactive shell
