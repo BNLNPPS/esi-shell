@@ -52,8 +52,8 @@ jobs:
 
       - name: Test image
         run: |
-          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} tests/test_opticks.sh
+          docker run --rm ${{ env.IMAGE_NAME }}:${{ env.TAG }} eic-opticks/tests/test_opticks.sh
 
       - name: Test esi-shell
         run: |
-          ./esi-shell -t ${{ env.TAG }} "opticks-full-prepare && opticks-t"
+          ./esi-shell -t ${{ env.TAG }} "eic-opticks/tests/test_opticks.sh"
