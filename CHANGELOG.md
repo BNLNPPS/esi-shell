@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/BNLNPPS/esi-shell/compare/1.2.2...1.3.0) (2025-02-08)
+
+
+### Features
+
+* bump esi-opticks (opticks@0.3.1) ([81483f0](https://github.com/BNLNPPS/esi-shell/commit/81483f068b26c40aaddef6a0b0bad5add0350a5b))
+
 ## [1.2.2](https://github.com/BNLNPPS/esi-shell/compare/1.2.1...1.2.2) (2024-12-19)
 
 
