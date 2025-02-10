@@ -58,17 +58,17 @@ EOF
 RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
 RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
 
+COPY spack /opt/spack
+RUN spack install plog
+
 RUN spack module tcl refresh -y
 RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json >> /etc/profile.d/z10_load_spack_modules.sh
+RUN spack module tcl loads geant4 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
 RUN mkdir -p /opt/bcm && curl -sL https://github.com/boost-cmake/bcm/archive/refs/heads/master.tar.gz | tar -xz --strip-components 1 -C /opt/bcm \
  && cmake -B /tmp/build/bcm -S /opt/bcm && cmake --build /tmp/build/bcm --target install
-
-RUN mkdir -p /opt/plog && curl -sL https://github.com/SergiusTheBest/plog/archive/refs/tags/1.1.10.tar.gz | tar -xz --strip-components 1 -C /opt/plog \
- && cmake -B /tmp/build/plog -S /opt/plog && cmake --build /tmp/build/plog --target install
 
 # Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
 RUN cat <<"EOF" > /etc/bash.nonint
