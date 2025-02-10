@@ -42,6 +42,7 @@ RUN spack install mesa ~llvm \
 #RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
 
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
+RUN poetry self update
 
 RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
@@ -87,8 +88,8 @@ ENV BASH_ENV=/etc/bash.nonint
 ENV ESI_DIR=/esi
 ENV HOME=$ESI_DIR
 ENV OPTIX_DIR=/usr/local/optix
-ENV OPTICKS_HOME=${ESI_DIR}/opticks
-ENV OPTICKS_PREFIX=/usr/local/opticks
+ENV OPTICKS_HOME=${ESI_DIR}/eic-opticks
+ENV OPTICKS_PREFIX=/usr/local/eic-opticks
 ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
 ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=89
@@ -99,6 +100,20 @@ ENV VIRTUAL_ENV_DISABLE_PROMPT=1
 ENV TMP=/tmp
 ENV CMAKE_PREFIX_PATH=${OPTICKS_PREFIX}
 
+WORKDIR $ESI_DIR
+
+COPY . .
+COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+
+RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/da5bcc87.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+
+RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
+ && cmake --build $OPTICKS_PREFIX/build --parallel --target install
+
+RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+# Set up python environment with poetry
 RUN mkdir -p /opt/pypoetry
 
 ENV POETRY_CONFIG_DIR=/opt/pypoetry/config
@@ -106,30 +121,6 @@ ENV POETRY_VIRTUALENVS_PATH=/opt/pypoetry/venv
 ENV POETRY_DATA_DIR=/opt/pypoetry/share
 ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
 
-WORKDIR $ESI_DIR
-
-COPY .opticks .opticks
-COPY tests tests
-COPY README.md .
-COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
-COPY pyproject.toml .
-
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/esi-opticks/archive/83742b32.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
-
 RUN poetry install
-RUN chmod -R 777 /opt/pypoetry
-
-RUN echo -e "\
-source $(poetry env info --path)/bin/activate \n\
-source $OPTICKS_HOME/opticks.bash \n\
-opticks-" >> /etc/profile.d/z20_opticks.sh
-
-RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-
-RUN cmake -S opticks -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Release \
- && cmake --build $OPTICKS_PREFIX/build --parallel --target install
-
-# Allow non-root users rebuild Opticks in interactive shell
-RUN chmod -R 777 ${OPTICKS_PREFIX}
-
-RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+RUN poetry add $OPTICKS_HOME
+RUN echo -e "source $(poetry env info --path)/bin/activate" >> /etc/profile.d/z20_poetry_env.sh
