@@ -22,7 +22,7 @@ RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_sourc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN spack install geant4 \
+RUN spack install geant4@11.1.2 \
  && spack uninstall -f -y g4ndl \
  && spack clean -a
 
@@ -64,7 +64,7 @@ RUN spack install plog
 RUN spack module tcl refresh -y
 RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
 RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
+RUN spack module tcl loads geant4@11.1.2 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
 RUN mkdir -p /opt/bcm && curl -sL https://github.com/boost-cmake/bcm/archive/refs/heads/master.tar.gz | tar -xz --strip-components 1 -C /opt/bcm \
