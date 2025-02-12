@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:11.8.0-runtime-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -22,7 +22,7 @@ RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_sourc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN spack install geant4 \
+RUN spack install geant4@11.1.2+qt \
  && spack uninstall -f -y g4ndl \
  && spack clean -a
 
