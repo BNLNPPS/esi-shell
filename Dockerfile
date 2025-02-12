@@ -67,9 +67,6 @@ RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_mod
 RUN spack module tcl loads geant4@11.1.2 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
-RUN mkdir -p /opt/bcm && curl -sL https://github.com/boost-cmake/bcm/archive/refs/heads/master.tar.gz | tar -xz --strip-components 1 -C /opt/bcm \
- && cmake -B /tmp/build/bcm -S /opt/bcm && cmake --build /tmp/build/bcm --target install
-
 # Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
 RUN cat <<"EOF" > /etc/bash.nonint
 if [ -d /etc/profile.d ]; then
