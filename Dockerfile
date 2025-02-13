@@ -124,3 +124,5 @@ ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
 RUN poetry install
 RUN poetry add $OPTICKS_HOME
 RUN echo -e "source $(poetry env info --path)/bin/activate" >> /etc/profile.d/z20_poetry_env.sh
+
+COPY --from=nvcr.io/nvidia/cuda:11.8.0-devel-ubuntu22.04 /usr/local/cuda-11.8/targets /usr/local/cuda-11.8/targets
