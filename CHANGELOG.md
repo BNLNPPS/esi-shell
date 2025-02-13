@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/BNLNPPS/esi-shell/compare/1.3.0...1.3.1) (2025-02-13)
+
+
+### Bug Fixes
+
+* copy CUDA targets from devel image ([#137](https://github.com/BNLNPPS/esi-shell/issues/137)) ([7ae1a1f](https://github.com/BNLNPPS/esi-shell/commit/7ae1a1f41c9168d6234270217ff51ce8d0d57d78))
+
 # [1.3.0](https://github.com/BNLNPPS/esi-shell/compare/1.2.2...1.3.0) (2025-02-08)
 
 
