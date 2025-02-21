@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:11.8.0-runtime-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:12.5.0-runtime-ubuntu22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -8,7 +8,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update \
  && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip \
     libssl-dev python-is-python3 \
-    cuda-nvcc-11-8 libcurand-dev-11-8 \
+    cuda-nvcc-12-5 libcurand-dev-12-5 \
     libxinerama-dev libxcursor-dev libxi-dev \
     nano vim \
  && apt clean \
@@ -125,4 +125,4 @@ RUN poetry install
 RUN poetry add $OPTICKS_HOME
 RUN echo -e "source $(poetry env info --path)/bin/activate" >> /etc/profile.d/z20_poetry_env.sh
 
-COPY --from=nvcr.io/nvidia/cuda:11.8.0-devel-ubuntu22.04 /usr/local/cuda-11.8/targets /usr/local/cuda-11.8/targets
+COPY --from=nvcr.io/nvidia/cuda:12.5.0-devel-ubuntu22.04 /usr/local/cuda-12.5/targets /usr/local/cuda-12.5/targets
