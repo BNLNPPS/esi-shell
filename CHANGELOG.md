@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/BNLNPPS/esi-shell/compare/1.3.1...1.4.0) (2025-02-21)
+
+
+### Features
+
+* upgrade base image to CUDA@12.5.0 ([#134](https://github.com/BNLNPPS/esi-shell/issues/134)) ([8771e2e](https://github.com/BNLNPPS/esi-shell/commit/8771e2ebe0592115ac6d9641b8bcbfdf286de5be))
+
 ## [1.3.1](https://github.com/BNLNPPS/esi-shell/compare/1.3.0...1.3.1) (2025-02-13)
 
 
