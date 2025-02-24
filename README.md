@@ -32,14 +32,13 @@ Once the container is up, you can execute the code relying on GPU functionality,
 available tests:
 
 ```shell
-opticks-full-prepare
-opticks-t
+eic-opticks/tests/test_opticks.sh
 ```
 
 It is also possible to run any container command non-interactively:
 
 ```shell
-./esi-shell "opticks-full-prepare && opticks-t"
+./esi-shell eic-opticks/tests/test_opticks.sh
 ```
 
 Use the `-h/--help` option to get a quick summary of available options and to learn how to pass
@@ -53,23 +52,9 @@ arguments to the underlying container, e.g.:
 
 ### For developers
 
-If you plan to develop the code utilizing GPU capabilities, you will likely need to install [NVIDIA
-OptiX](https://developer.nvidia.com/designworks/optix/download). Place the downloaded file on the
-same path where you cloned [github.com/BNLNPPS/esi-shell](https://github.com/BNLNPPS/esi-shell):
-
-```shell
-cd esi-shell
-ls
-... NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh ...
-```
-
-Now, the `esi-shell` image can be built locally
-
-```shell
-docker build -t esi-shell .
-```
-
-For local development with OptiX, install it on your host system. We recommend installing OptiX in
+If you plan to develop the code utilizing ray-tracing GPU capabilities, you will likely need to
+install [NVIDIA OptiX](https://developer.nvidia.com/designworks/optix/download). After downloading
+the appropriate SDK version, install it on your host system. We recommend installing OptiX in
 `/usr/local/optix` but any other path will be as good:
 
 ```
@@ -81,6 +66,33 @@ mkdir -p $OPTIX_DIR
 When running `esi-shell`, make sure that the environment variable `OPTIX_DIR` is configured to point
 to the directory where OptiX is installed. If not set, the default path `OPTIX_DIR=/usr/local/optix`
 will be mounted insdie the container at runtime.
+
+Once the above step is performed, the developer can bind-mount any directory with the source code in
+the interactive shell:
+
+```
+esi-shell -- -e HOME=$HOME -w $HOME
+```
+
+
+#### Building a local image
+
+Another option to make OptiX available for development inside your local container is to rebuild the
+image using the `Dockerfile` in the `esi-shell` repository. Place the downloaded NVIDIA OptiX
+installation file on the same path where you cloned
+[github.com/BNLNPPS/esi-shell](https://github.com/BNLNPPS/esi-shell):
+
+```shell
+cd esi-shell
+ls
+... NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh ...
+```
+
+This self-unpacking shell file will be used to install OptiX inside the `esi-shell` image built locally:
+
+```shell
+docker build -t esi-shell .
+```
 
 
 #### Using `esi-shell` Docker Images
@@ -121,29 +133,4 @@ These arguments can also be passed to `esi-shell` after the `--` option divider.
 
 ```shell
 DOCKER_HOST=ssh://HOST esi-shell -- -e DISPLAY=$(ssh HOST 'echo $DISPLAY') -v $(ssh HOST 'echo $HOME')/.Xauthority:/esi/.Xauthority --net=host
-```
-
-
-### Opticks
-
-One can get familiar with Opticks by running provided tests and examining the produced output. For
-example, in the properly setup environment do:
-
-```shell
-opticks-full-prepare
-opticks/g4cx/tests/G4CXTest_raindrop.sh
-python -i opticks/g4cx/tests/G4CXOpticks_setGeometry_Test.py
-```
-
-```python
-import plotly.graph_objects as go
-from opticks.CSG.CSGFoundry import CSGFoundry
-
-cf = CSGFoundry.Load("/path/to/csg_tree")
-
-tri = cf.sim.stree.mesh.G4_WATER_solid.tri
-vtx = cf.sim.stree.mesh.G4_WATER_solid.vtx
-m = go.Mesh3d(x=vtx.T[0], y=vtx.T[1], z=vtx.T[2], i=tri.T[0], j=tri.T[1], k=tri.T[2], color='green', opacity=0.2)
-fig = go.Figure(data=[m])
-fig.show()
 ```
