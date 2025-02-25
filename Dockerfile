@@ -67,9 +67,6 @@ RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_mod
 RUN spack module tcl loads geant4@11.1.2 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
 RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 
-RUN mkdir -p /opt/bcm && curl -sL https://github.com/boost-cmake/bcm/archive/refs/heads/master.tar.gz | tar -xz --strip-components 1 -C /opt/bcm \
- && cmake -B /tmp/build/bcm -S /opt/bcm && cmake --build /tmp/build/bcm --target install
-
 # Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
 RUN cat <<"EOF" > /etc/bash.nonint
 if [ -d /etc/profile.d ]; then
@@ -106,7 +103,7 @@ COPY . .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/da5bcc87.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/b6e8cdb1.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_PREFIX/build --parallel --target install
