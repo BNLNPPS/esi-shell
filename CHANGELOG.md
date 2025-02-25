@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/BNLNPPS/esi-shell/compare/1.4.0...1.4.1) (2025-02-25)
+
+
+### Bug Fixes
+
+* freeze Geant4@11.1.2 ([#136](https://github.com/BNLNPPS/esi-shell/issues/136)) ([ef942ed](https://github.com/BNLNPPS/esi-shell/commit/ef942ed3fe2fb8f605aeb6e29a00bfb7557647b3))
+* make poetry venv public ([#138](https://github.com/BNLNPPS/esi-shell/issues/138)) ([da1b141](https://github.com/BNLNPPS/esi-shell/commit/da1b141502e414cb814bd08c0044037dd86cb3d7))
+
 # [1.4.0](https://github.com/BNLNPPS/esi-shell/compare/1.3.1...1.4.0) (2025-02-21)
 
 
