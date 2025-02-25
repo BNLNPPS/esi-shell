@@ -1,8 +1,10 @@
 ## esi-shell
 
-The goal of this project is to provide a stable containerized environment for
-reproducible simulation jobs leveraging on the Geant4 and NVIDIA OptiX ray
-tracing capabilities.
+This repository provides a containerized environment designed for reproducible
+simulation jobs. It leverages the Geant4 simulation framework and NVIDIA OptiX
+ray-tracing capabilities, offering a streamlined setup for a GPU-accelerated
+environment, whether used interactively or non-interactively.
+
 
 ### Prerequisites
 
@@ -104,12 +106,11 @@ docker build -t esi-shell .
 
 #### Using `esi-shell` Docker Images
 
-The `esi-shell` script streamlines the process of setting up a GPU-enabled
-Geant4 simulation environment, but you can also directly work with the
-[`esi-shell` Docker
-images](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell) if
-preferred. These images can be pulled from the registry and used independently
-of the script.
+The `esi-shell` script simplifies the setup of a GPU-enabled Geant4 simulation
+environment. However, if you prefer, you can work directly with the [`esi-shell`
+Docker images](https://github.com/BNLNPPS/esi-shell/pkgs/container/esi-shell).
+These images can be pulled from the registry and used independently of the
+script, providing additional flexibility for various use cases.
 
 To run a tagged image with your local NVIDIA OptiX installation, use the
 following command:
