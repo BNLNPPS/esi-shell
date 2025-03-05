@@ -99,15 +99,15 @@ ENV CMAKE_PREFIX_PATH=${OPTICKS_PREFIX}
 WORKDIR $ESI_DIR
 
 COPY . .
-COPY NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh .
+COPY NVIDIA-OptiX-SDK-9.0.0-linux64-x86_64.sh .
 
-RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
+RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-9.0.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/97d5d715.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_PREFIX/build --parallel --target install
 
-RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh
+RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-9.0.0-linux64-x86_64.sh
 
 # Set up python environment with poetry
 RUN mkdir -p /opt/pypoetry
