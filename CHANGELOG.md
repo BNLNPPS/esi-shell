@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/BNLNPPS/esi-shell/compare/1.4.3...1.4.4) (2025-03-10)
+
+
+### Bug Fixes
+
+* bump eic-opticks revision ([#143](https://github.com/BNLNPPS/esi-shell/issues/143)) ([0ef0cf5](https://github.com/BNLNPPS/esi-shell/commit/0ef0cf55c3acab3efa6b77b333b90ac8dd20cffc))
+
 ## [1.4.3](https://github.com/BNLNPPS/esi-shell/compare/1.4.2...1.4.3) (2025-02-26)
 
 
