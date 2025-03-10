@@ -87,7 +87,6 @@ ENV HOME=$ESI_DIR
 ENV OPTIX_DIR=/usr/local/optix
 ENV OPTICKS_HOME=${ESI_DIR}/eic-opticks
 ENV OPTICKS_PREFIX=/usr/local/eic-opticks
-ENV OPTICKS_CUDA_PREFIX=/usr/local/cuda
 ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
 ENV OPTICKS_COMPUTE_CAPABILITY=89
 ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
@@ -103,7 +102,7 @@ COPY . .
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/9405312d.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/97d5d715.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_PREFIX/build --parallel --target install
