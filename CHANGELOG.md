@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/BNLNPPS/esi-shell/compare/1.4.4...1.5.0) (2025-03-12)
+
+
+### Features
+
+* OptiX 8.1.0 ([#144](https://github.com/BNLNPPS/esi-shell/issues/144)) ([c5e660e](https://github.com/BNLNPPS/esi-shell/commit/c5e660edad4ce9b9ba614d53e348ade84e04cc15))
+
 ## [1.4.4](https://github.com/BNLNPPS/esi-shell/compare/1.4.3...1.4.4) (2025-03-10)
 
 
