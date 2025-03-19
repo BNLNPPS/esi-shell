@@ -20,6 +20,7 @@ class EicOpticks(CMakePackage, CudaPackage):
     depends_on("glm")
     depends_on("glu")
     depends_on("nlohmann-json")
+    depends_on("mesa~llvm")
     depends_on("plog")
 
     # External resource (e.g., an additional dataset, model, or patch file)
