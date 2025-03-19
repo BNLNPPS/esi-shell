@@ -22,41 +22,7 @@ RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_sourc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN spack install geant4@11.1.2 \
- && spack uninstall -f -y g4ndl \
- && spack clean -a
-
-RUN spack install boost+system+program_options+regex+filesystem \
- && spack install cmake \
- && spack install nlohmann-json \
- && spack clean -a
-
-RUN spack install mesa ~llvm \
- && spack install glew \
- && spack install glfw \
- && spack install glm \
- && spack install glu \
- && spack clean -a
-
-# Strip all the binaries
-#RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
-
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
-RUN poetry self update
-
-RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
-
-COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
-    include:
-      - CPATH
-    lib64:
-      - LD_LIBRARY_PATH
-    lib:
-      - LD_LIBRARY_PATH
-EOF
-
-RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
-RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
-
 COPY spack /opt/spack
-RUN spack install plog
+
+RUN spack install --only dependencies eic-opticks
+RUN spack install eic-opticks
