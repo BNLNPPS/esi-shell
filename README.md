@@ -103,6 +103,12 @@ This self-unpacking shell file will be used to install OptiX inside the
 docker build -t esi-shell .
 ```
 
+One can also build an extended image with additional tools installed to assist with debugging and visualization.
+
+```shell
+docker build -t esi-shell:debug -f Dockerfile.debug .
+```
+
 
 #### Using `esi-shell` Docker Images
 

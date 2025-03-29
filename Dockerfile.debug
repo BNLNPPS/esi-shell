@@ -1,0 +1,63 @@
+# syntax=docker/dockerfile:latest
+
+FROM ghcr.io/bnlnpps/esi-shell:1.4.4
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN spack install root \
+ && spack clean -a
+
+RUN spack install geant4+threads+motif+opengl+x11+qt ^qt \
+ && spack clean -a
+
+RUN spack install geant4~threads+motif+opengl+x11+qt ^qt \
+ && spack clean -a
+
+RUN spack install geant4@11.1.2+qt \
+ && spack clean -a
+
+RUN <<"EOF"
+ spack module tcl refresh -y
+ rm -fr /opt/modules && cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
+ echo "module use --append /opt/modules" > /etc/profile.d/z10_load_spack_modules.sh
+ spack module tcl loads geant4@11.1.2+qt xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog libxrandr root >> /etc/profile.d/z10_load_spack_modules.sh
+ rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
+EOF
+
+# Follow instructions at https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html#package-manager-installation
+RUN <<"EOF"
+ apt update
+ apt install -y --no-install-recommends gnupg
+ echo "deb http://developer.download.nvidia.com/devtools/repos/ubuntu$(source /etc/lsb-release; echo "$DISTRIB_RELEASE" | tr -d .)/$(dpkg --print-architecture) /" | tee /etc/apt/sources.list.d/nvidia-devtools.list
+ apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+ apt update
+ apt install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+ apt install -y libqt5x11extras5
+ apt install -y libxcb-xinerama0 libxcb-xinerama0-dev
+ apt install -y libxkbcommon-x11-0
+ apt install -y nsight-systems-cli nsight-systems libgl1-mesa-glx libsm6 libx11-6 libxext6 libxrender1 libxtst6 libxcb1
+ apt install -y mesa-utils x11-apps
+ apt clean
+EOF
+
+# Install esi-opticks
+COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
+RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
+
+RUN rm -fr $OPTICKS_PREFIX
+RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
+ && cmake --build $OPTICKS_PREFIX/build --parallel --target install
+
+RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
+
+COPY nsight-compute-linux-2024.3.2.3-34861637.run .
+
+RUN <<"EOF"
+ ./nsight-compute-linux-2024.3.2.3-34861637.run --quiet -- -noprompt
+ rm -fr nsight-compute-linux-2024.3.2.3-34861637.run
+EOF
+
+RUN apt update && apt install -y gdb
+
+ENV OPTICKS_EVENT_MODE=DebugHeavy
+ENV GEOM=dummy
