@@ -1,73 +1,27 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:12.5.0-runtime-ubuntu22.04
+FROM nvcr.io/nvidia/cuda:12.4.0-runtime-ubuntu22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install Spack package manager
 RUN apt update \
- && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip \
-    libssl-dev python-is-python3 \
-    cuda-nvcc-12-5 libcurand-dev-12-5 \
-    libxinerama-dev libxcursor-dev libxi-dev \
-    nano vim \
+ && apt install -y bzip2 ca-certificates g++ gcc gfortran git gzip lsb-release patch python3 tar unzip xz-utils zstd \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN apt update \
+ && apt install -y curl cuda-nvcc-12-4 libcurand-dev-12-4 python-is-python3 python3-pip \
+ && apt clean \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN sed -i 's/    granularity: microarchitectures/    granularity: generic/g' /opt/spack/etc/spack/defaults/concretizer.yaml
-RUN sed -i '/  all:/a\    target: [x86_64_v3]'  /opt/spack/etc/spack/defaults/packages.yaml
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v1.0.1.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN spack install geant4@11.1.2 \
- && spack uninstall -f -y g4ndl \
- && spack clean -a
-
-RUN spack install boost+system+program_options+regex+filesystem \
- && spack install cmake \
- && spack install nlohmann-json \
- && spack clean -a
-
-RUN spack install mesa ~llvm \
- && spack install glew \
- && spack install glfw \
- && spack install glm \
- && spack install glu \
- && spack clean -a
-
-# Strip all the binaries
-#RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
-
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
-RUN poetry self update
-
-RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
-
-COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
-    include:
-      - CPATH
-    lib64:
-      - LD_LIBRARY_PATH
-    lib:
-      - LD_LIBRARY_PATH
-EOF
-
-RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
-RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
-
-COPY spack /opt/spack
-RUN spack install plog
-
-RUN spack module tcl refresh -y
-RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
-RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4@11.1.2 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
-RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
-
-# Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
+# Set up non-interactive shells by sourcing all of the scripts in /etc/profile.d/
 RUN cat <<"EOF" > /etc/bash.nonint
 if [ -d /etc/profile.d ]; then
   for i in /etc/profile.d/*.sh; do
@@ -82,44 +36,45 @@ EOF
 RUN cat /etc/bash.nonint >> /etc/bash.bashrc
 
 ENV BASH_ENV=/etc/bash.nonint
-ENV ESI_DIR=/esi
-ENV HOME=$ESI_DIR
-ENV OPTIX_DIR=/usr/local/optix
-ENV OPTICKS_HOME=${ESI_DIR}/eic-opticks
-ENV OPTICKS_PREFIX=/usr/local/eic-opticks
-ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
-ENV OPTICKS_COMPUTE_CAPABILITY=89
-ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
-ENV PATH=${OPTICKS_PREFIX}/bin:${OPTICKS_PREFIX}/lib:${PATH}
-ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
-ENV VIRTUAL_ENV_DISABLE_PROMPT=1
-ENV TMP=/tmp
-ENV CMAKE_PREFIX_PATH=${OPTICKS_PREFIX}
 
-WORKDIR $ESI_DIR
+RUN mkdir -p /opt/eic-opticks && curl -sL https://github.com/bnlnpps/eic-opticks/archive/refs/heads/main.tar.gz | tar -xz --strip-components 1 -C /opt/eic-opticks
 
-COPY . .
-COPY NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh .
+RUN python -m pip install -e /opt/eic-opticks
 
-RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/97d5d715.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN spack repo add /opt/eic-opticks/spack
+RUN spack install --only dependencies eic-opticks
 
-RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
- && cmake --build $OPTICKS_PREFIX/build --parallel --target install
 
-RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-8.1.0-linux64-x86_64.sh
+FROM base AS release
 
-# Set up python environment with poetry
-RUN mkdir -p /opt/pypoetry
+RUN spack install eic-opticks build_type=Release
 
-ENV POETRY_CONFIG_DIR=/opt/pypoetry/config
-ENV POETRY_VIRTUALENVS_PATH=/opt/pypoetry/venv
-ENV POETRY_DATA_DIR=/opt/pypoetry/share
-ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
 
-RUN poetry install
-RUN poetry add $OPTICKS_HOME
-RUN chmod -R 777 /opt/pypoetry
-RUN echo -e "source $(poetry env info --path)/bin/activate" >> /etc/profile.d/z20_poetry_env.sh
+FROM base AS develop
 
-COPY --from=nvcr.io/nvidia/cuda:12.5.0-devel-ubuntu22.04 /usr/local/cuda-12.5/targets /usr/local/cuda-12.5/targets
+RUN spack install --keep-stage eic-opticks build_type=Debug
+
+# Follow instructions at https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html#package-manager-installation
+RUN <<"EOF"
+ apt update
+ apt install -y --no-install-recommends gnupg
+ echo "deb http://developer.download.nvidia.com/devtools/repos/ubuntu$(source /etc/lsb-release; echo "$DISTRIB_RELEASE" | tr -d .)/$(dpkg --print-architecture) /" | tee /etc/apt/sources.list.d/nvidia-devtools.list
+ apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+ apt update
+ apt install -y qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+ apt install -y libqt5x11extras5
+ apt install -y libxcb-xinerama0 libxcb-xinerama0-dev
+ apt install -y libxkbcommon-x11-0
+ apt install -y nsight-systems-cli nsight-systems libgl1-mesa-glx libsm6 libx11-6 libxext6 libxrender1 libxtst6 libxcb1
+ apt install -y mesa-utils x11-apps
+ apt clean
+EOF
+
+COPY nsight-compute-linux-2024.3.2.3-34861637.run .
+
+RUN <<"EOF"
+ ./nsight-compute-linux-2024.3.2.3-34861637.run --quiet -- -noprompt
+ rm -fr nsight-compute-linux-2024.3.2.3-34861637.run
+EOF
+
+RUN apt update && apt install -y gdb
