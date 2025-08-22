@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:12.5.0-runtime-ubuntu22.04 AS base
+FROM nvcr.io/nvidia/cuda:12.4.0-runtime-ubuntu22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -11,14 +11,12 @@ RUN apt update \
  && rm -rf /var/lib/apt/lists/*
 
 RUN apt update \
- && apt install -y curl cuda-nvcc-12-5 libcurand-dev-12-5 python-is-python3 python3-pip \
+ && apt install -y curl cuda-nvcc-12-4 libcurand-dev-12-4 python-is-python3 python3-pip \
  && apt clean \
  && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v1.0.1.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 
-RUN sed -i 's/    granularity: microarchitectures/    granularity: generic/g' /opt/spack/etc/spack/defaults/concretizer.yaml
-RUN sed -i '/  all:/a\    target: [x86_64_v3]'  /opt/spack/etc/spack/defaults/packages.yaml
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 SHELL ["/bin/bash", "-l", "-c"]
