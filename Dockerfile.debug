@@ -4,9 +4,26 @@ FROM ghcr.io/bnlnpps/esi-shell:1.4.4
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+# ------------------------------------------------------------------
+# System packages (as requested)
+# ------------------------------------------------------------------
+RUN apt-get update -y \
+ && apt-get install -y --no-install-recommends \
+    libgsl-dev libxpm-dev libxft-dev libtbb-dev binutils cmake dpkg-dev \
+    g++ gcc libssl-dev git libx11-dev libxext-dev python3 libgif-dev python3-dev \
+    libgl1-mesa-dev libglu1-mesa-dev \
+    qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools \
+ && rm -rf /var/lib/apt/lists/*
+
+# ------------------------------------------------------------------
+# Build and install ROOT (kept, aligns with your request)
+# ------------------------------------------------------------------
 RUN spack install root \
  && spack clean -a
 
+# ------------------------------------------------------------------
+# Existing Spack Geant4 installs (unchanged)
+# ------------------------------------------------------------------
 RUN spack install geant4+threads+motif+opengl+x11+qt ^qt \
  && spack clean -a
 
@@ -16,6 +33,9 @@ RUN spack install geant4~threads+motif+opengl+x11+qt ^qt \
 RUN spack install geant4@11.1.2+qt \
  && spack clean -a
 
+# ------------------------------------------------------------------
+# Prepare Spack modules
+# ------------------------------------------------------------------
 RUN <<"EOF"
  spack module tcl refresh -y
  rm -fr /opt/modules && cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
@@ -24,6 +44,18 @@ RUN <<"EOF"
  rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
 EOF
 
+# ------------------------------------------------------------------
+# Fetch and build RAT-PAC (as requested)
+# Use a login shell to pick up the Spack modules for ROOT/Geant4
+# ------------------------------------------------------------------
+RUN bash -lc "source /etc/profile.d/z10_load_spack_modules.sh \
+  && git clone https://github.com/rat-pac/ratpac-setup.git /opt/ratpac-setup \
+  && cd /opt/ratpac-setup \
+  && ./setup.sh -j\"\$(nproc)\""
+
+# ------------------------------------------------------------------
+# NVIDIA Nsight Systems / utilities (kept from original)
+# ------------------------------------------------------------------
 # Follow instructions at https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html#package-manager-installation
 RUN <<"EOF"
  apt update
@@ -40,7 +72,9 @@ RUN <<"EOF"
  apt clean
 EOF
 
-# Install esi-opticks
+# ------------------------------------------------------------------
+# Install esi-opticks (kept from original)
+# ------------------------------------------------------------------
 COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
 RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
 
