@@ -1,125 +1,73 @@
 # syntax=docker/dockerfile:latest
 
-FROM nvcr.io/nvidia/cuda:12.5.0-runtime-ubuntu22.04
+FROM ghcr.io/bnlnpps/esi-shell:1.4.4
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG WITH_TF=0          # set to 1 to install TensorFlow (CPU)
+SHELL ["/bin/bash", "-lc"]
 
-# Install Spack package manager
-RUN apt update \
- && apt install -y build-essential ca-certificates coreutils curl environment-modules gfortran git gpg lsb-release python3 python3-distutils python3-venv unzip zip \
-    libssl-dev python-is-python3 \
-    cuda-nvcc-12-5 libcurand-dev-12-5 \
-    libxinerama-dev libxcursor-dev libxi-dev \
-    nano vim \
- && apt clean \
+# --- System packages (includes requested Ubuntu Qt5) ---
+RUN apt-get update -y \
+ && apt-get install -y --no-install-recommends \
+    binutils cmake dpkg-dev g++ gcc git libssl-dev \
+    libgsl-dev libxpm-dev libxft-dev libtbb-dev \
+    libx11-dev libxext-dev libgif-dev python3 python3-dev \
+    libgl1-mesa-dev libglu1-mesa-dev environment-modules \
+    qtbase5-dev qtbase5-dev-tools qt5-qmake \
+    curl ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+# --- Ensure ROOT and Geant4(+qt) are present via Spack (idempotent) ---
+RUN spack install root && spack clean -a
+RUN spack install geant4@11.1.2+qt && spack clean -a
 
-RUN sed -i 's/    granularity: microarchitectures/    granularity: generic/g' /opt/spack/etc/spack/defaults/concretizer.yaml
-RUN sed -i '/  all:/a\    target: [x86_64_v3]'  /opt/spack/etc/spack/defaults/packages.yaml
-RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
+# Ensure vdt is available (ROOT usually depends on it, but make explicit)
+RUN spack install vdt && spack clean -a
 
-SHELL ["/bin/bash", "-l", "-c"]
+# --- Prepare Spack modules; emit full dependency loads (includes vdt, etc.) ---
+RUN spack module tcl refresh -y \
+ && rm -rf /opt/modules \
+ && cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules \
+ && echo "module use --append /opt/modules" > /etc/profile.d/z10_load_spack_modules.sh \
+ && { \
+      spack module tcl loads --dependencies root; \
+      spack module tcl loads --dependencies geant4@11.1.2+qt; \
+    } >> /etc/profile.d/z10_load_spack_modules.sh
 
-RUN spack install geant4@11.1.2 \
- && spack uninstall -f -y g4ndl \
- && spack clean -a
-
-RUN spack install boost+system+program_options+regex+filesystem \
- && spack install cmake \
- && spack install nlohmann-json \
- && spack clean -a
-
-RUN spack install mesa ~llvm \
- && spack install glew \
- && spack install glfw \
- && spack install glm \
- && spack install glu \
- && spack clean -a
-
-# Strip all the binaries
-#RUN find -L /spack/opt/spack -type f -exec readlink -f '{}' \; | xargs file -i | grep 'charset=binary' | grep 'x-executable\|x-archive\|x-sharedlib' | awk -F: '{print $1}' | xargs strip -S
-
-RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
-RUN poetry self update
-
-RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
-
-COPY <<"EOF" /tmp/patch_spack_default_modules.yaml
-    include:
-      - CPATH
-    lib64:
-      - LD_LIBRARY_PATH
-    lib:
-      - LD_LIBRARY_PATH
-EOF
-
-RUN sed -i '/  prefix_inspections:/r /tmp/patch_spack_default_modules.yaml' /opt/spack/etc/spack/defaults/modules.yaml
-RUN sed -i 's/       autoload: direct/       autoload: none/g'  /opt/spack/etc/spack/defaults/modules.yaml
-
-COPY spack /opt/spack
-RUN spack install plog
-
-RUN spack module tcl refresh -y
-RUN cp -r /opt/spack/share/spack/modules/linux-ubuntu22.04-x86_64_v3 /opt/modules
-RUN echo "module use --append /opt/modules" >> /etc/profile.d/z10_load_spack_modules.sh
-RUN spack module tcl loads geant4@11.1.2 xerces-c openssl clhep boost cmake mesa glew glfw glm glu nlohmann-json plog >> /etc/profile.d/z10_load_spack_modules.sh
-RUN rm -fr /opt/spack/share/spack/modules/$linux-ubuntu22.04-x86_64_v3
-
-# Set up non-interactive shells by sourcing all of the scripts in /et/profile.d/
-RUN cat <<"EOF" > /etc/bash.nonint
-if [ -d /etc/profile.d ]; then
-  for i in /etc/profile.d/*.sh; do
-    if [ -r $i ]; then
-      . $i
+# --- Optional: TensorFlow (CPU) for CMake detection (off by default) ---
+# This installs the TensorFlow C API + python wheel, and exports CMake hints.
+RUN if [ "$WITH_TF" -eq 1 ]; then \
+      set -euxo pipefail; \
+      TF_VER=2.17.0; \
+      curl -fsSL -o /tmp/libtensorflow.tgz \
+        "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-${TF_VER}.tar.gz"; \
+      tar -C /usr/local -xzf /tmp/libtensorflow.tgz; \
+      rm /tmp/libtensorflow.tgz; \
+      ldconfig; \
+      python3 -m pip install --no-cache-dir --upgrade pip; \
+      python3 -m pip install --no-cache-dir "tensorflow-cpu==${TF_VER}"; \
+      printf '%s\n' \
+        'export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}' \
+        'export Tensorflow_INCLUDE_DIR=/usr/local/include' \
+        'export Tensorflow_LIBRARY=/usr/local/lib/libtensorflow.so' \
+        > /etc/profile.d/z40_tensorflow.sh; \
     fi
-  done
-  unset i
-fi
-EOF
 
-RUN cat /etc/bash.nonint >> /etc/bash.bashrc
+# --- Fetch and build ONLY RAT-PAC (reuse Spack's ROOT/G4/Qt) ---
+RUN source /etc/profile.d/z10_load_spack_modules.sh \
+ && git clone https://github.com/rat-pac/ratpac-setup.git /opt/ratpac-setup \
+ && cd /opt/ratpac-setup \
+ && ./setup.sh --only ratpac -j"$(nproc)"
 
-ENV BASH_ENV=/etc/bash.nonint
-ENV ESI_DIR=/esi
-ENV HOME=$ESI_DIR
-ENV OPTIX_DIR=/usr/local/optix
-ENV OPTICKS_HOME=${ESI_DIR}/eic-opticks
-ENV OPTICKS_PREFIX=/usr/local/eic-opticks
-ENV OPTICKS_OPTIX_PREFIX=${OPTIX_DIR}
-ENV OPTICKS_COMPUTE_CAPABILITY=89
-ENV LD_LIBRARY_PATH=${OPTICKS_PREFIX}/lib:${LD_LIBRARY_PATH}
-ENV PATH=${OPTICKS_PREFIX}/bin:${OPTICKS_PREFIX}/lib:${PATH}
-ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
-ENV VIRTUAL_ENV_DISABLE_PROMPT=1
-ENV TMP=/tmp
-ENV CMAKE_PREFIX_PATH=${OPTICKS_PREFIX}
+# Make RAT-PAC available in every shell
+ENV RATPAC_HOME=/opt/ratpac-setup
+RUN printf 'source /opt/ratpac-setup/env.sh\n' > /etc/profile.d/z30_ratpac.sh \
+ && if [ -x /opt/ratpac-setup/local/bin/rat ]; then ln -sf /opt/ratpac-setup/local/bin/rat /usr/local/bin/rat; fi \
+ && if [ -x /opt/ratpac-setup/ratpac/build/bin/rat ]; then ln -sf /opt/ratpac-setup/ratpac/build/bin/rat /usr/local/bin/rat; fi
 
-WORKDIR $ESI_DIR
+# (Optional) quick sanity check (remove if you want faster builds)
+RUN source /etc/profile.d/z10_load_spack_modules.sh \
+ && source /opt/ratpac-setup/env.sh \
+ && rat -h >/dev/null 2>&1 || true
 
-COPY . .
-COPY NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh .
-
-RUN mkdir -p $OPTIX_DIR && ./NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh --skip-license --prefix=$OPTIX_DIR
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/97d5d715.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
-
-RUN cmake -S $OPTICKS_HOME -B $OPTICKS_PREFIX/build -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
- && cmake --build $OPTICKS_PREFIX/build --parallel --target install
-
-RUN rm -fr $OPTIX_DIR/* $ESI_DIR/NVIDIA-OptiX-SDK-7.6.0-linux64-x86_64.sh
-
-# Set up python environment with poetry
-RUN mkdir -p /opt/pypoetry
-
-ENV POETRY_CONFIG_DIR=/opt/pypoetry/config
-ENV POETRY_VIRTUALENVS_PATH=/opt/pypoetry/venv
-ENV POETRY_DATA_DIR=/opt/pypoetry/share
-ENV POETRY_CACHE_DIR=/opt/pypoetry/cache
-
-RUN poetry install
-RUN poetry add $OPTICKS_HOME
-RUN chmod -R 777 /opt/pypoetry
-RUN echo -e "source $(poetry env info --path)/bin/activate" >> /etc/profile.d/z20_poetry_env.sh
-
-COPY --from=nvcr.io/nvidia/cuda:12.5.0-devel-ubuntu22.04 /usr/local/cuda-12.5/targets /usr/local/cuda-12.5/targets
+WORKDIR /esi
