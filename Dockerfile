@@ -66,6 +66,25 @@ WORKDIR $ESI_DIR
 RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/f051f4a7a8.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 
+FROM base AS esi-env
+
+RUN spack env create esi-env
+RUN spack -e esi-env repo update -b develop builtin
+RUN spack -e esi-env repo add https://github.com/BNLNPPS/spack-packages
+RUN spack -e esi-env external find --not-buildable --path /usr/local/cuda cuda
+RUN spack -e esi-env install --keep-stage --add opticks build_type=Debug ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
+RUN spack env activate esi-env --sh > /etc/profile.d/z10_load_spack_environment.sh
+
+
+FROM base AS no-env
+
+RUN spack repo update -b develop builtin
+RUN spack repo add https://github.com/BNLNPPS/spack-packages
+RUN spack external find --not-buildable --path /usr/local/cuda cuda
+RUN spack install opticks ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
+RUN echo "spack load opticks" > /etc/profile.d/z10_load_spack_environment.sh
+
+
 FROM deps AS release
 
 RUN spack -e esi-env add geant4@11.3.2 +opengl +qt
@@ -118,9 +137,6 @@ EOF
 
 # Install Python dependencies
 RUN python -m pip install --upgrade pip && pip install -e $OPTICKS_HOME
-
-# need to figure out the location of ptx files in runtime
-#RUN spack install --add --reuse --keep-stage eic_opticks build_type=Debug
 
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_BUILD -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_BUILD --parallel --target install
