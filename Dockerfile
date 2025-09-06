@@ -17,7 +17,7 @@ RUN apt update \
 
 RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v1.0.1.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 # Set up non-interactive shells by sourcing all of the scripts in /etc/profile.d/
