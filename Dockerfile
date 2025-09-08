@@ -45,10 +45,8 @@ RUN spack -e esi-env add python py-pip
 RUN spack -e esi-env add openssl
 RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa ~llvm
 RUN spack -e esi-env add plog
-RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
 RUN spack -e esi-env add optix_dev@7.7
 RUN spack -e esi-env install
-RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
 ENV BASH_ENV=/etc/bash.nonint
 ENV ESI_DIR=/esi
@@ -70,11 +68,23 @@ RUN python -m pip install --upgrade pip && pip install -e $OPTICKS_HOME
 
 FROM base AS release
 
+RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
+RUN spack -e esi-env env activate \
+ && spack load $(spack find --format '{name}{@version}' --explicit) \
+ && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
+
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_BUILD -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Release \
  && cmake --build $OPTICKS_BUILD --parallel --target install
 
 
 FROM base AS develop
+
+RUN spack -e esi-env add geant4@11.1.2 +opengl +qt build_type=Debug
+RUN spack -e esi-env add root build_type=Debug
+RUN spack -e esi-env install && spack clean -a
+RUN spack -e esi-env env activate \
+ && spack load $(spack find --format '{name}{@version}' --explicit) \
+ && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
 # need to figure out the location of ptx files in runtime
 #RUN spack install --add --reuse --keep-stage eic_opticks build_type=Debug
