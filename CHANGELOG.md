@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/BNLNPPS/esi-shell/compare/1.5.0...1.6.0) (2025-09-08)
+
+
+### Features
+
+* update Spack environment for eic-opticks ([#147](https://github.com/BNLNPPS/esi-shell/issues/147)) ([e994930](https://github.com/BNLNPPS/esi-shell/commit/e99493082ef328defab1d9e867c45528a9e1c601))
+
 # [1.5.0](https://github.com/BNLNPPS/esi-shell/compare/1.4.4...1.5.0) (2025-03-12)
 
 
