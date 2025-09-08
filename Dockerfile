@@ -17,7 +17,7 @@ RUN apt update \
 
 RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v1.0.1.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 # Set up non-interactive shells by sourcing all of the scripts in /etc/profile.d/
@@ -43,7 +43,7 @@ RUN spack env create esi-env
 RUN spack -e esi-env add cmake
 RUN spack -e esi-env add python py-pip
 RUN spack -e esi-env add openssl
-RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa ~llvm
+RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa
 RUN spack -e esi-env add plog
 RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
 RUN spack -e esi-env add optix_dev@7.7
