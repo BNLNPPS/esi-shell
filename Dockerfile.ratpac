@@ -5,7 +5,9 @@ FROM ghcr.io/bnlnpps/esi-shell:1.6.0-rc2-develop
 #RUN spack -e esi-env add root build_type=Debug
 RUN spack -e esi-env add root
 RUN spack -e esi-env install && spack clean -a
-RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
+RUN spack -e esi-env env activate \
+ && spack load $(spack find --format '{name}{@version}' --explicit) \
+ && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
 # --- Fetch and build ONLY RAT-PAC (reuse Spack's ROOT/G4/Qt) ---
 RUN git clone https://github.com/rat-pac/ratpac-setup.git /opt/ratpac-setup \
