@@ -9,7 +9,6 @@ RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
  && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
-# --- Fetch and build ONLY RAT-PAC (reuse Spack's ROOT/G4/Qt) ---
-RUN git clone https://github.com/rat-pac/ratpac-setup.git /opt/ratpac-setup \
- && cd /opt/ratpac-setup \
- && ./setup.sh --only ratpac -j"$(nproc)"
+RUN git clone https://github.com/rat-pac/ratpac-two.git
+RUN cmake ratpac-two -B build -DCMAKE_INSTALL_PREFIX=install
+RUN cmake --build build/ --parallel
