@@ -47,6 +47,7 @@ RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa ~llvm
 RUN spack -e esi-env add plog
 RUN spack -e esi-env add optix_dev@7.7
 RUN spack -e esi-env install
+RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
 ENV BASH_ENV=/etc/bash.nonint
 ENV ESI_DIR=/esi
