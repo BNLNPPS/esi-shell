@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/BNLNPPS/esi-shell/compare/1.6.0...1.7.0) (2025-09-16)
+
+
+### Features
+
+* install selected packages in debug mode in develop image ([#153](https://github.com/BNLNPPS/esi-shell/issues/153)) ([d9b0d84](https://github.com/BNLNPPS/esi-shell/commit/d9b0d84a370cafe5cd865094cdb19432c4bff0ce))
+
 # [1.6.0](https://github.com/BNLNPPS/esi-shell/compare/1.5.0...1.6.0) (2025-09-08)
 
 
