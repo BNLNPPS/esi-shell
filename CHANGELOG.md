@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/BNLNPPS/esi-shell/compare/1.7.0...1.8.0) (2025-09-16)
+
+
+### Features
+
+* install ratpac in develop image ([#154](https://github.com/BNLNPPS/esi-shell/issues/154)) ([6fe849b](https://github.com/BNLNPPS/esi-shell/commit/6fe849b65e81d09151d41136f85c4e04d3c1a777))
+
 # [1.7.0](https://github.com/BNLNPPS/esi-shell/compare/1.6.0...1.7.0) (2025-09-16)
 
 
