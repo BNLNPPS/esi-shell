@@ -85,6 +85,11 @@ RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
  && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
+# Install RatPac
+RUN git clone https://github.com/rat-pac/ratpac-two.git \
+ && cmake ratpac-two -B build \
+ && cmake --build build/ --parallel
+
 # Install Python dependencies
 RUN python -m pip install --upgrade pip && pip install -e $OPTICKS_HOME
 
