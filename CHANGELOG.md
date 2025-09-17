@@ -1,3 +1,15 @@
+# [1.9.0](https://github.com/BNLNPPS/esi-shell/compare/1.8.0...1.9.0) (2025-09-17)
+
+
+### Bug Fixes
+
+* **ci:** update external asset ([#156](https://github.com/BNLNPPS/esi-shell/issues/156)) ([a71676f](https://github.com/BNLNPPS/esi-shell/commit/a71676f338f7ebc75f1c89e2aa5a5a6a9bb80191))
+
+
+### Features
+
+* install nvidia nsight into develop image for debugging ([#155](https://github.com/BNLNPPS/esi-shell/issues/155)) ([7bcb82f](https://github.com/BNLNPPS/esi-shell/commit/7bcb82f2e1c2f5bc51fe3141d644aee19d4b76eb))
+
 # [1.8.0](https://github.com/BNLNPPS/esi-shell/compare/1.7.0...1.8.0) (2025-09-16)
 
 
