@@ -36,18 +36,20 @@ RUN cat /etc/bash.nonint >> /etc/bash.bashrc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-COPY spack /opt/eic-opticks/spack
-
-RUN spack repo add /opt/eic-opticks/spack
 RUN spack env create esi-env
 RUN spack -e esi-env add cmake
 RUN spack -e esi-env add python py-pip
 RUN spack -e esi-env add openssl
 RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa
-RUN spack -e esi-env add plog
-RUN spack -e esi-env add optix_dev@7.7
+RUN spack -e esi-env add optix-dev@7.7
 RUN spack -e esi-env add automake autoconf libtool m4
 RUN spack -e esi-env install
+RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
+
+RUN spack repo add https://github.com/plexoos/spack-packages.git
+RUN spack repo update -r https://github.com/plexoos/spack-packages.git -c 5d5e3d3009e47123091058697b0e9df8d38b7846 builtin
+
+RUN spack -e esi-env install --add plog
 RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
 
 ENV BASH_ENV=/etc/bash.nonint
