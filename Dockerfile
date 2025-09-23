@@ -39,9 +39,7 @@ SHELL ["/bin/bash", "-l", "-c"]
 
 FROM base AS deps
 
-COPY spack /opt/eic-opticks/spack
-
-RUN spack repo add /opt/eic-opticks/spack
+RUN spack repo update -b develop builtin
 RUN spack env create esi-env
 RUN spack -e esi-env add cmake
 RUN spack -e esi-env add python py-pip
