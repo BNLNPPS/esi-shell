@@ -81,6 +81,7 @@ FROM deps AS develop
 
 RUN spack -e esi-env install --add root@6.34 build_type=Debug
 RUN spack -e esi-env install --add texinfo
+RUN spack -e esi-env install --add gawk
 RUN spack -e esi-env install --add geant4@11.1.2 +opengl +qt build_type=Debug
 RUN spack -e esi-env install && spack clean -a
 RUN spack -e esi-env env activate \
