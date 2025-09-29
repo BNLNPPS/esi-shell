@@ -36,7 +36,9 @@ RUN cat /etc/bash.nonint >> /etc/bash.bashrc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN spack repo update -b develop builtin
+COPY spack /opt/eic-opticks/spack
+
+RUN spack repo add /opt/eic-opticks/spack
 RUN spack env create esi-env
 RUN spack -e esi-env add cmake
 RUN spack -e esi-env add python py-pip
