@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack.build_systems.cmake import CMakePackage
+from spack_repo.builtin.build_systems.cmake import CMakePackage
 
 from spack.package import *
 
@@ -21,3 +21,4 @@ class Plog(CMakePackage):
     version("1.1.9", sha256="058315b9ec9611b659337d4333519ab4783fad3f2f23b1cc7bb84d977ea38055")
 
     depends_on("cxx", type="build")
+    depends_on("c", type="build")
