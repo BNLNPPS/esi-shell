@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/BNLNPPS/esi-shell/compare/1.9.0...1.9.1) (2025-09-30)
+
+
+### Bug Fixes
+
+* freeze ratpac version 3.2.0 ([#159](https://github.com/BNLNPPS/esi-shell/issues/159)) ([ac42c18](https://github.com/BNLNPPS/esi-shell/commit/ac42c18e47379da0d209f755bba37feab9f5d34a))
+
 # [1.9.0](https://github.com/BNLNPPS/esi-shell/compare/1.8.0...1.9.0) (2025-09-17)
 
 
