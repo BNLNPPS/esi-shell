@@ -36,6 +36,9 @@ RUN cat /etc/bash.nonint >> /etc/bash.bashrc
 
 SHELL ["/bin/bash", "-l", "-c"]
 
+
+FROM base AS deps
+
 COPY spack /opt/eic-opticks/spack
 
 RUN spack repo add /opt/eic-opticks/spack
@@ -65,7 +68,7 @@ WORKDIR $ESI_DIR
 RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/0ae57ef923.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 
-FROM base AS release
+FROM deps AS release
 
 RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
 RUN spack -e esi-env env activate \
@@ -76,7 +79,7 @@ RUN cmake -S $OPTICKS_HOME -B $OPTICKS_BUILD -DCMAKE_INSTALL_PREFIX=$OPTICKS_PRE
  && cmake --build $OPTICKS_BUILD --parallel --target install
 
 
-FROM base AS develop
+FROM deps AS develop
 
 RUN spack -e esi-env install --add root build_type=Debug
 RUN spack -e esi-env install --add geant4@11.1.2 +opengl +qt build_type=Debug
