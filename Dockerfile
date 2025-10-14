@@ -63,12 +63,12 @@ ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
 
 WORKDIR $ESI_DIR
 
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/0ae57ef923.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/f051f4a7a8.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 
 FROM deps AS release
 
-RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
+RUN spack -e esi-env add geant4@11.3.2 +opengl +qt
 RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
  && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
@@ -82,7 +82,7 @@ FROM deps AS develop
 RUN spack -e esi-env install --add root@6.34 build_type=Debug
 RUN spack -e esi-env install --add texinfo
 RUN spack -e esi-env install --add gawk
-RUN spack -e esi-env install --add geant4@11.1.2 +opengl +qt build_type=Debug
+RUN spack -e esi-env install --add geant4@11.3.2 +opengl +qt build_type=Debug
 RUN spack -e esi-env install && spack clean -a
 RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
