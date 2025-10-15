@@ -46,7 +46,7 @@ RUN spack env create esi-env
 RUN spack -e esi-env add cmake
 RUN spack -e esi-env add python py-pip
 RUN spack -e esi-env add openssl
-RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa ~llvm
+RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa@23.0.2 ~llvm
 RUN spack -e esi-env add plog
 RUN spack -e esi-env add optix_dev@7.7
 RUN spack -e esi-env add automake autoconf libtool m4
