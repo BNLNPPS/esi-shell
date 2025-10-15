@@ -35,12 +35,8 @@ jobs:
           context: .
           tags: ${{ env.IMAGE_NAME }}:${{ env.TAG }}
           load: true
-          cache-from: |
-            type=local,src=/home/runner/.buildx-cache
-            type=registry,ref=${{ env.IMAGE_NAME }}:latest
-          cache-to: |
-            type=inline
-            type=local,dest=/home/runner/.buildx-cache-new,mode=max
+          cache-from: type=local,src=/home/runner/.buildx-cache
+          cache-to: type=local,dest=/home/runner/.buildx-cache-new,mode=max
 
       - name: Move cache
         # Temp fix
