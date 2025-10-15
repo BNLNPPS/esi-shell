@@ -46,7 +46,7 @@ RUN spack -e esi-env add python py-pip
 RUN spack -e esi-env add openssl
 RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa@23.0.2 ~llvm
 RUN spack -e esi-env add plog
-RUN spack -e esi-env add optix_dev@7.7
+RUN spack -e esi-env add optix-dev@7.7
 RUN spack -e esi-env add automake autoconf libtool m4
 RUN spack -e esi-env install
 RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
