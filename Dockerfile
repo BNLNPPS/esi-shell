@@ -17,7 +17,7 @@ RUN apt update \
 
 RUN sed -i 's/  exec "$@"/  exec "\/bin\/bash" "-c" "$*"/g' /opt/nvidia/nvidia_entrypoint.sh
 
-RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v0.23.0.tar.gz | tar -xz --strip-components 1 -C /opt/spack
+RUN mkdir -p /opt/spack && curl -sL https://github.com/spack/spack/archive/v1.0.1.tar.gz | tar -xz --strip-components 1 -C /opt/spack
 RUN echo "source /opt/spack/share/spack/setup-env.sh" > /etc/profile.d/z09_source_spack_setup.sh
 
 # Set up non-interactive shells by sourcing all of the scripts in /etc/profile.d/
@@ -39,16 +39,14 @@ SHELL ["/bin/bash", "-l", "-c"]
 
 FROM base AS deps
 
-COPY spack /opt/eic-opticks/spack
-
-RUN spack repo add /opt/eic-opticks/spack
+RUN spack repo update -b develop builtin
 RUN spack env create esi-env
 RUN spack -e esi-env add cmake
-RUN spack -e esi-env add python py-pip
+RUN spack -e esi-env add python@3.12 py-pip
 RUN spack -e esi-env add openssl
-RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa ~llvm
+RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa@23.0.2 ~llvm
 RUN spack -e esi-env add plog
-RUN spack -e esi-env add optix_dev@7.7
+RUN spack -e esi-env add optix-dev@7.7
 RUN spack -e esi-env add automake autoconf libtool m4
 RUN spack -e esi-env install
 RUN spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
@@ -65,12 +63,12 @@ ENV NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility
 
 WORKDIR $ESI_DIR
 
-RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/0ae57ef923.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
+RUN mkdir -p $OPTICKS_HOME && curl -sL https://github.com/BNLNPPS/eic-opticks/archive/f051f4a7a8.tar.gz | tar -xz --strip-components 1 -C $OPTICKS_HOME
 
 
 FROM deps AS release
 
-RUN spack -e esi-env add geant4@11.1.2 +opengl +qt
+RUN spack -e esi-env add geant4@11.3.2 +opengl +qt
 RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
  && spack -e esi-env env activate --sh --dir /opt/spack/var/spack/environments/esi-env > /etc/profile.d/z10_load_spack_environment.sh
@@ -81,8 +79,10 @@ RUN cmake -S $OPTICKS_HOME -B $OPTICKS_BUILD -DCMAKE_INSTALL_PREFIX=$OPTICKS_PRE
 
 FROM deps AS develop
 
-RUN spack -e esi-env install --add root build_type=Debug
-RUN spack -e esi-env install --add geant4@11.1.2 +opengl +qt build_type=Debug
+RUN spack -e esi-env install --add root@6.34 build_type=Debug
+RUN spack -e esi-env install --add texinfo
+RUN spack -e esi-env install --add gawk
+RUN spack -e esi-env install --add geant4@11.3.2 +opengl +qt build_type=Debug
 RUN spack -e esi-env install && spack clean -a
 RUN spack -e esi-env env activate \
  && spack load $(spack find --format '{name}{@version}' --explicit) \
