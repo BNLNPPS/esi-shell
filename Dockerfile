@@ -42,7 +42,7 @@ FROM base AS deps
 RUN spack repo update -b develop builtin
 RUN spack env create esi-env
 RUN spack -e esi-env add cmake
-RUN spack -e esi-env add python py-pip
+RUN spack -e esi-env add python@3.12 py-pip
 RUN spack -e esi-env add openssl
 RUN spack -e esi-env add glew glfw glm glu nlohmann-json mesa@23.0.2 ~llvm
 RUN spack -e esi-env add plog
