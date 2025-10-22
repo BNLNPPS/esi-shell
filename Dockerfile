@@ -116,11 +116,11 @@ RUN <<"EOF"
  rm -fr nsight-compute-linux-2024.3.2.3-34861637.run
 EOF
 
+# Install Python dependencies
+RUN python -m pip install --upgrade pip && pip install -e $OPTICKS_HOME
+
 # need to figure out the location of ptx files in runtime
 #RUN spack install --add --reuse --keep-stage eic_opticks build_type=Debug
 
 RUN cmake -S $OPTICKS_HOME -B $OPTICKS_BUILD -DCMAKE_INSTALL_PREFIX=$OPTICKS_PREFIX -DCMAKE_BUILD_TYPE=Debug \
  && cmake --build $OPTICKS_BUILD --parallel --target install
-
-# Install Python dependencies
-RUN python -m pip install --upgrade pip && pip install -e $OPTICKS_HOME
