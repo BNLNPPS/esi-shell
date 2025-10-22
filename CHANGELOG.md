@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/BNLNPPS/esi-shell/compare/1.9.1...1.10.0) (2025-10-22)
+
+
+### Features
+
+* upgrade to Spack v1.0.1 ([#152](https://github.com/BNLNPPS/esi-shell/issues/152)) ([89e0341](https://github.com/BNLNPPS/esi-shell/commit/89e034152b641b3d4ec8c63c090f0bf5e34b4257))
+
 ## [1.9.1](https://github.com/BNLNPPS/esi-shell/compare/1.9.0...1.9.1) (2025-09-30)
 
 
