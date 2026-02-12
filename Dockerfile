@@ -72,7 +72,7 @@ RUN spack env create esi-env
 RUN spack -e esi-env repo update -b develop builtin
 RUN spack -e esi-env repo add https://github.com/BNLNPPS/spack-packages
 RUN spack -e esi-env external find --not-buildable --path /usr/local/cuda cuda
-RUN spack -e esi-env install --keep-stage --add opticks build_type=Debug ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
+RUN spack -e esi-env install --keep-stage --add eic-opticks build_type=Debug ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
 RUN spack env activate esi-env --sh > /etc/profile.d/z10_load_spack_environment.sh
 
 
@@ -81,8 +81,8 @@ FROM base AS no-env
 RUN spack repo update -b develop builtin
 RUN spack repo add https://github.com/BNLNPPS/spack-packages
 RUN spack external find --not-buildable --path /usr/local/cuda cuda
-RUN spack install opticks ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
-RUN echo "spack load opticks" > /etc/profile.d/z10_load_spack_environment.sh
+RUN spack install eic-opticks ^mesa@23.0.2~llvm ^geant4@11.3.2 ^optix-dev@7.7
+RUN echo "spack load eic-opticks" > /etc/profile.d/z10_load_spack_environment.sh
 
 
 FROM deps AS release
